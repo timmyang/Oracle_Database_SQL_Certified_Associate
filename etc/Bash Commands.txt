@@ -1,0 +1,26 @@
+- cd /c/Users/gusdn/AppData/Roaming/"SQL Developer"/mywork/Oracle_Database_SQL_Certified_Associate
+- git commit -m""
+- git push -u origin main
+
+
+- pwd
+- ls
+- git status
+
+
+- cd c:/Users/gusdn/AppData/Roaming/"SQL Developer"/mywork/Oracle_Dertified_Associate
+- git init
+- git remote add origin https://github.com.timmyang/Oracle_Database_Associate.git
+- git remote
+- (git branch -M main)
+- git commit -m ""
+
+
+- echo "# Oracle_Database_SQL_Certified_Associate" >> README.md
+- git init
+- git add README.md
+- git commit -m ""
+- git branch -M main
+- git remote add origin https://github.com/timmyang/Oracle_Databased_Associate.git
+- git push -u origin main
+
