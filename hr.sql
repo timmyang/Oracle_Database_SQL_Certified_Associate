@@ -40,3 +40,6 @@ FROM departments;
 --3 using Arithmetic Expressions (+, -, *, /)
 SELECT employee_id, first_name, salary
 FROM employees;
+
+SELECT employee_id, first_name, salary, salary + 100, salary + (salary * 0.10)
+FROM employees;
