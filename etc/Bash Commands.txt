@@ -1,4 +1,5 @@
 - cd /c/Users/gusdn/AppData/Roaming/"SQL Developer"/mywork/Oracle_Database_SQL_Certified_Associate
+- git add -A
 - git commit -m""
 - git push -u origin main
 
