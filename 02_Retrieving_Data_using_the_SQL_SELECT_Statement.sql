@@ -1,4 +1,13 @@
 /*
+Retrieving Data using the SQL SELECT Statement
+- Using Column aliases
+- Using the SQL SELECT statement
+- Using concatenation operator, literal character strings, 
+  alternavtive quote operator, and the DISTINCT keyword
+- Using Arithmetic expressions and NULL values in the SELECT statement
+*/
+
+/*
 Section 4: Retrieving data using the select statement
 */
 
