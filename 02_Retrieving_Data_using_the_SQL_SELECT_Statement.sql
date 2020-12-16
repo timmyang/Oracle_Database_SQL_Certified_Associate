@@ -22,9 +22,11 @@ FROM employees;                 -- use 'ctrl' + 'enter' to execute the code
 SELECT *
 FROM departments;
 
+
 --2 to select specific columns
 SELECT department_id, department_name
 FROM departments;
+
 
 --3 using Arithmetic Expressions (+, -, *, /)
 SELECT employee_id, first_name, salary
@@ -33,19 +35,23 @@ FROM employees;
 SELECT employee_id, first_name, salary, salary + 100, salary + (salary * 0.10)
 FROM employees;
 
+
 --4 to know NULL values
 -- NULL is a value that is unavailable, unassigned, unknown, or inapplicable
 -- NULL is not the same as zero or a blank space
 SELECT last_name, job_id, salary, commission_pct
 FROM employees;
 
+
 --5 Arithmetic expressions containing a NULL value evaluate to NULL
 SELECT last_name, job_id, salary, commission_pct, commission_pct + 10
 FROM employees;
 
+
 --6 Defining a column alias (remanes a column heading)
 SELECT last_name, last_name AS name, last_name lname, last_name " LAST nAME"
 FROM employees;
+
 
 --7 Concatenation Operator "||" Links columns or character strings
 -- Literal (A Literal is a character, a number, or a date that is included in the SELECT statement)
@@ -62,9 +68,10 @@ FROM employees;
 SELECT first_name||q'( work in depart'''ment)'||department_id
 FROM employees;
 
+
 --8 Using DISTINCT
 SELECT department_id
-FROM employees;         -- this will pick all the DEPARTMENT_ID from the table EMPLOYEES
+FROM employees;                     -- this will pick all the DEPARTMENT_ID from the table EMPLOYEES
 
 SELECT DISTINCT department_id       -- in the beginning of the SELECT statement
 FROM employees;
@@ -73,11 +80,13 @@ FROM employees;
 SELECT DISTINCT department_id, job_id
 FROM employees;
 
+
 --9 DESCRIBE or DESC command
 -- Use the DESCRIBE command to display the structure of a table
 DESCRIBE employees;
 
 DESC employees;
+
 
 /*
 Capabilities of SQL SELECT statements:
