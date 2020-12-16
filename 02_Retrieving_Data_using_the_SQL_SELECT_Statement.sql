@@ -1,10 +1,10 @@
 /*
 Retrieving Data using the SQL SELECT Statement
-- Using Column aliases
 - Using the SQL SELECT statement
+- Using Arithmetic expressions and NULL values in the SELECT statement
+- Using Column aliases
 - Using concatenation operator, literal character strings, 
   alternavtive quote operator, and the DISTINCT keyword
-- Using Arithmetic expressions and NULL values in the SELECT statement
 */
 
 
@@ -26,6 +26,34 @@ FROM departments;
 --2 to select specific columns
 SELECT department_id, department_name
 FROM departments;
+
+/*
+Capabilities of SQL SELECT statements:
+
+- Retrieving the columns from the table is called "Projection"
+- Retrieving the rows from the table is called "Selection"
+- Retrieving the data from multiple tables is called "Join"
+
+
+Basic SELECT statement:
+SELECT {*| [DISTINCT] column| expression [alias], ...}
+FROM table;
+
+- SELECT identifies the columns to be displayed
+- FROM identifies the table containing those columns
+
+
+Writing SQL statements:
+
+- SQL statements are not case sensitive
+- SQL statements can be entered on one or more lines
+- KEYWORDS cannot be abbreviated or split across lines
+- Clauses (WHERE, ORDERBY, HAVING, TOP, GROUP BY) are usually placed on separate lines
+- Indents are used to enhance readability
+- In SQL Developer, SQL statements can be optionally terminated by a semicolon(;)
+    Semicolons are required when you execute multiple SQL statements
+- In SQL Plus, you are required to end each SQL statement with a semicolon(;)
+*/
 
 
 --3 using Arithmetic Expressions (+, -, *, /)
@@ -55,8 +83,10 @@ FROM employees;
 
 --7 Concatenation Operator "||" Links columns or character strings
 -- Literal (A Literal is a character, a number, or a date that is included in the SELECT statement)
-SELECT first_name, last_name, first_name||last_name "full name",
-       first_name||' '||last_name "full name with space" -- Using literal character strings
+SELECT first_name, last_name, 
+       first_name||last_name, 
+       first_name||last_name "full name", 
+       first_name||' '||last_name "full name with space"            -- using literal character strings
 FROM employees;
 
 SELECT first_name||' work in department '||department_id
@@ -76,42 +106,18 @@ FROM employees;                     -- this will pick all the DEPARTMENT_ID from
 SELECT DISTINCT department_id       -- in the beginning of the SELECT statement
 FROM employees;
 
+SELECT DISTINCT job_id
+FROM employees;
+
 -- you can use many columns in distinct
 SELECT DISTINCT department_id, job_id
 FROM employees;
 
+SELECT DISTINCT *                   -- an entire row is one distinct value
+FROM employees;
 
 --9 DESCRIBE or DESC command
 -- Use the DESCRIBE command to display the structure of a table
 DESCRIBE employees;
 
 DESC employees;
-
-
-/*
-Capabilities of SQL SELECT statements:
-
-- Retrieving the columns from the table is called "Projection"
-- Retrieving the rows from the table is called "Selection"
-- Retrieving the data from multiple tables is called "Join"
-
-
-Basic SELECT statement:
-SELECT {*| [DISTINCT] column| expression [alias], ...}
-FROM table;
-
-- SELECT identifies the columns to be displayed
-- FROM identifies the table containing those columns
-
-
-Writing SQL statements:
-
-- SQL statements are not case sensitive
-- SQL statements can be entered on one or more lines
-- Keywords cannot be abbreviated or split across lines
-- Clauses are usually placed on separate lines
-- Indents are used to enhance readability
-- In SQL Developer, SQL statements can be optionally terminated by a semicolon(;)
-    Semicolons are required when you execute multiple SQL statements
-- In SQL Plus, you are required to end each SQL statement with a semicolon(;)
-*/
