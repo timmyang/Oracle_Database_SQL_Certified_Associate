@@ -1,6 +1,6 @@
 # Oracle Database SQL Certified Associate Certification
 
-#### Overview:
+## Overview
 Become an Oracle Database SQL Certified Associate and demonstrate understanding of fundamental SQL concepts needed to undertake any database project. Passing the exam illustrates depth of knowledge of SQL and its use when working with the Oracle Database server. Gain a working knowledge of queries , insert, update and delete SQL statements as well as some Data Definition language and Data Control Language, the optimizer, tales and indexes, data modeling and normalization. By passing this exam, a certified individual proves fluency in and a solid understanding of SQL language, data modeling and using SQL to create amd manipulate tables in an Oracle Database.
  
 Qualified candidates have knowledge of general computing concepts, knowledge of command line interfaces and experience working in command line.
