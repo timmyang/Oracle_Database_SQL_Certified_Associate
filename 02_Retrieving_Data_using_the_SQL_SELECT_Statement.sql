@@ -48,7 +48,7 @@ Writing SQL statements:
 - SQL statements are not case sensitive
 - SQL statements can be entered on one or more lines
 - KEYWORDS cannot be abbreviated or split across lines
-- Clauses (WHERE, ORDERBY, HAVING, TOP, GROUP BY) are usually placed on separate lines
+- Clauses (WHERE, ORDER BY, HAVING, TOP, GROUP BY) are usually placed on separate lines
 - Indents are used to enhance readability
 - In SQL Developer, SQL statements can be optionally terminated by a semicolon(;)
     Semicolons are required when you execute multiple SQL statements
