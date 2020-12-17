@@ -15,11 +15,11 @@
 
 ## 3. Restricting and Sorting Data
 
-- Applying Rules of precedence for operators in an expression
 - Limiting Rows Returned in a SQL Statement
+- Applying Rules of precedence for operators in an expression
+- Sorting Data
 - Using Substitution Variables
 - Using the DEFINE and VERIFY commands
-- Sorting Data
 
 ## 4. Using Single-Row Functions to Customize Output
 
