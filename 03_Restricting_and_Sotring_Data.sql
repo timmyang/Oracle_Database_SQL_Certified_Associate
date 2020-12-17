@@ -1,3 +1,4 @@
+
 /*
 Restricting and Sorting Data
 - Limiting Rows Returned in a SQL statement
@@ -44,7 +45,7 @@ What you should know when using WHERE:
 - The default display format is DD-MON-YY (e.g. '01-JAN-20')
 */
 
---3 using WHERE in Char column
+--3 using WHERE in a Char column
 SELECT employee_id, first_name, last_name, job_id
 FROM employees
 WHERE first_name = 'Steven';                        -- not 'steven'
@@ -70,7 +71,7 @@ WHERE salary >= 10000;
 
 SELECT *
 FROM employees
-WHERE hire_date > '01-01-32';       -- 'YY-MM-DD''
+WHERE hire_date > '99-12-31';       -- 'YY-MM-DD''
 
 SELECT *
 FROM employees
@@ -370,3 +371,107 @@ SELECT employee_id, first_name, salary
 FROM employees
 ORDER BY salary DESC
 FETCH FIRST 2 ROWS WITH TIES;
+
+
+--23 Substitution Variables
+/* 
+Temporarily store values with & and &&.
+
+Substitution variables can be used in:
+- WHERE conditions
+- ORDER BY clauses
+- Column expressions
+- Table names
+- Entire SELECT statements
+*/
+
+SELECT employee_id, last_name, salary, department_id
+FROM employees
+WHERE employee_id = &employee_num; -- defining a employee_num variable, which will be discarded after it is used
+
+-- include '' for Varchar
+SELECT employee_id, last_name, salary, department_id
+FROM employees
+WHERE first_name = '&ename'
+ORDER BY 2;
+
+SELECT employee_id, first_name, last_name, salary, department_id
+FROM employees
+WHERE first_name = &ename       -- put 'Name' as an answer
+ORDER BY 2;
+
+-- Exercise
+-- &column_name = salary, &condition = salary > 1000, &order_column = employee_id
+SELECT employee_id, last_name, job_id, &column_name
+FROM employees
+WHERE &condition
+ORDER BY &order_column;
+
+
+--24 the DEFINE and UNDEFINE command
+-- DEFINE to create and assign a value to a variable
+-- UNDEFINE to remove a variable
+DEFINE employee_num = 200      -- this variable is valid only for this session
+
+SELECT employee_id, last_name, salary, department_id
+FROM employees
+WHERE employee_id = &employee_num;
+
+UNDEFINE employee_num;
+
+
+-- Defining a variable using the ACCEPT command
+ACCEPT dept_id PROMPT 'pelase enter dept_id'     -- must be executed together
+SELECT * 
+FROM employees
+WHERE department_id = &dept_id;
+
+UNDEFINE dep_id;
+
+-- Using multiple ACCEPT commands
+ACCEPT emp_from PROMPT 'please enter employee_from '    -- must be executed together
+ACCEPT emp_to PROMPT 'please enter employee_to '
+SELECT *
+FROM employees
+WHERE employee_id BETWEEN &emp_from AND &emp_to;
+
+
+UNDEFINE emp_from
+UNDEFINE emp_to;
+
+-- Using && to define a variable, and assign and store a value at the same time
+SELECT *
+FROM departments
+WHERE department_id = &&p;
+
+UNDEFINE p;
+
+
+SELECT employee_id, last_name, job_id, &&column_name
+FROM employees
+ORDER BY &column_name;      -- read the same value as &&column_name above
+
+UNDEFINE column_name;
+
+
+--25 using the VERIFY command
+-- to toggle the display of the Substitution variable,
+-- both before and after the SQL Developer replaces the substitution varaibles with values
+
+SET VERIFY ON       -- must be executed together with the below statement
+SELECT employee_id, last_name, salary
+FROM employees
+WHERE employee_id = &e_num;
+
+-- using the SET DEFINE OFF;
+SELECT *
+FROM departments
+WHERE department_name LIKE '%&t%';
+
+
+SET DEFINE OFF
+SELECT *
+FROM departments
+WHERE department_name LIKE '%&t%';
+
+SET DEFINE ON
