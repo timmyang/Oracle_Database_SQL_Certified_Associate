@@ -29,8 +29,8 @@ Qualified candidates have knowledge of general computing concepts, knowledge of 
 ## 4. Using Single-Row Functions to Customize Output
 
 - Manipulating strings with character functions in SQL SELECT and WHERE clauses
-- Performing arithmetic with date data
 - Manipulating numbers with the ROUND, TRUNC and MOD functions
+- Performing arithmetic with date data
 - Manipulating dates with the date function
 
 ## 5. Using Conversion Functions and Conditional Expressions
