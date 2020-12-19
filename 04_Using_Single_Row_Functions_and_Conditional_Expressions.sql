@@ -71,6 +71,7 @@ Single-row functions have five categories:
     All other letters in lower case
 */
 
+
 -- case converstion functions (UPPER, LOWER, INITCAP)
 SELECT employee_id, first_name, UPPER(first_name), LOWER(first_name), INITCAP(first_name)
 FROM employees;
@@ -118,6 +119,7 @@ ORDER BY UPPER(first_name);
     with a specified replacement string
 */
 
+
 -- CONCAT function
 SELECT employee_id, first_name, last_name, CONCAT(first_name, last_name)
 FROM employees;
@@ -125,6 +127,7 @@ FROM employees;
 -- the CONCAT function can only take two arguments, whereas || can take multiple
 SELECT employee_id, first_name, last_name, first_name || ' ' || last_name || salary name
 FROM employees;
+
 
 -- SUBSTR function
 -- SUBSTR(column|expression, m, n)
@@ -136,9 +139,11 @@ SELECT employee_id, first_name,
        SUBSTR(first_name, -3)           -- print last 3 characters
 FROM employees;
 
+
 -- LENGTH function
 SELECT first_name, LENGTH(first_name)
 FROM employees;
+
 
 -- INSTR function
 /*
@@ -154,17 +159,20 @@ SELECT first_name,
 FROM employees
 WHERE first_name = 'Nanette';
 
+
 -- LPAD and RPAD
 SELECT employee_id, first_name, salary, 
        LPAD(salary, 10, '#'),
        RPAD(salary, 10, '*')
 FROM employees;
 
+
 -- REPLACE function
 SELECT employee_id, first_name, 
        REPLACE(first_name, 'a', '*'),
        REPLACE(first_name, 'en', '#')
 FROM employees;
+
 
 -- TRIM function
 -- "dual" is a public table that you can use to view results from functions and calculations
@@ -177,6 +185,7 @@ FROM Dual;
 
 SELECT 1 + 5 
 FROM Employees;     -- the number of results equals to the number of records in the table
+
 
 -- TRIM([BOTH/LEADING/TRAILING] 'letter' FROM 'string')
 SELECT TRIM (' ' FROM ' tim yang ') V 
@@ -245,6 +254,7 @@ FROM Dual;
 SELECT ROUND(570.493, -3)
 FROM Dual;
 
+
 -- TRUNC function
 SELECT TRUNC(10.6565)
 FROM Dual;
@@ -260,6 +270,7 @@ FROM Dual;
 
 SELECT TRUNC(998.993, -3)
 FROM Dual;
+
 
 -- MOD function
 SELECT MOD(15, 2) 
@@ -288,6 +299,7 @@ FROM Employees;
 
 -- In general, if the value of the year is between 50-99, it returns a 19xx year
 -- If the value of the year is between 00-49, it returns a 20xx year
+
 
 -- SYSDATE
 -- returns the current database server date and time
@@ -332,6 +344,7 @@ SELECT employee_id, first_name,
        (SYSDATE - hire_date) / 7 "number of weeks"
 FROM Employees;
 
+
 -- MOTHS_BETWEEN
 SELECT employee_id, first_name,
        MONTHS_BETWEEN(SYSDATE, hire_date),
@@ -343,6 +356,7 @@ SELECT employee_id, first_name,
        MONTHS_BETWEEN(hire_date, SYSDATE)
 FROM Employees;
 
+
 -- ADD_MONTHS
 SELECT employee_id, first_name, hire_date, ADD_MONTHS(hire_date, 4)
 FROM Employees;
@@ -350,12 +364,14 @@ FROM Employees;
 SELECT employee_id, first_name, hire_date, ADD_MONTHS(hire_date, -2)
 FROM Employees;
 
+
 -- NEXT_DAY
 SELECT SYSDATE, NEXT_DAY(SYSDATE, 'FRIDAY')
 FROM Dual;
 
 SELECT SYSDATE, NEXT_DAY(SYSDATE, 1)        -- 1 = 'Sunday', 2 = 'Monday', ... , 7 = 'Saturday'
 FROM Dual;
+
 
 -- LAST_DAY
 -- picks the last day of the month
@@ -375,10 +391,52 @@ SELECT employee_id, first_name, hire_date,
 FROM Employees
 WHERE MONTHS_BETWEEN(SYSDATE, hire_date) < 155;
 
+
 -- ROUND 
 /*
-ROUND(SYSDATE, 'MONTH') -> 01-
+If the format model is MONTH, dates 1-15 results in the first day of the current month.
+Dates 1-16 results in the first day of the next month
 
+If the format model is YEAR, months 1-6 results in January 1st of the current year.
+Months 7-12 results in January 1 of the next year.
 */
 
+ROUND(SYSDATE, 'MONTH');
+ROUND(SYSDATE, 'YEAR');
+
+
 -- TRUNC
+TRUNC(SYSDATE, 'MONTH');
+TRUNC(SYSDATE, 'YEAR');
+
+-- Examples
+SELECT employee_id, first_name, hire_date,
+       ROUND(hire_date, 'MONTH'),
+       TRUNC(hire_date, 'MONTH')
+FROM Employees
+ORDER BY hire_date;
+
+SELECT employee_id, first_name, hire_date,
+       ROUND(hire_date, 'YEAR'),
+       TRUNC(hire_date, 'YEAR')
+FROM Employees
+ORDER BY hire_date;
+
+
+-- Nesting Functions
+/*
+Single-row functions can be nested to any level.
+Nested functions are evaluated from the deepest level to the least deep level.
+*/
+
+SELECT first_name, UPPER(first_name), SUBSTR(UPPER(first_name), 1, 3),
+       LPAD(SUBSTR(UPPER(first_name), 1, 3), 10, '*')
+FROM Employees;
+
+SELECT 'ahmed ali naser' full_name,
+       SUBSTR('ahmed ali naser', 1, (INSTR('ahmed ali naser', ' ', 1, 1) - 1)) first_name,
+       SUBSTR('ahmed ali naser', INSTR('ahmed ali naser', ' ', 1, 1) + 1,
+            INSTR('ahmed ali naser', ' ', 1, 2) - 1 
+            - INSTR('ahmed ali naser', ' ', 1, 1)) middle_name,
+       SUBSTR('ahmed ali naser', INSTR('ahmed ali naser', ' ', 1, 2) + 1) last_name
+FROM Dual;
