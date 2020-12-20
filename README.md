@@ -48,11 +48,11 @@ Qualified candidates have knowledge of general computing concepts, knowledge of 
 
 ## 7. Displaying Data from Multiple Tables
 
-Using Self-joins
-Using Various Types of Joins
-Using Non equijoins
-Using OUTER joins
-Understanding and Using Cartesian Products
+- Using Self-joins
+- Using Various Types of Joins
+- Using Non equijoins
+- Using OUTER joins
+- Understanding and Using Cartesian Products
 
 ## 8. Using Subqueries to Solve Queries
 
