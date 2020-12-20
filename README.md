@@ -32,13 +32,13 @@ Qualified candidates have knowledge of general computing concepts, knowledge of 
 - Manipulating numbers with the ROUND, TRUNC and MOD functions
 - Performing arithmetic with date data
 - Manipulating dates with the date function
+- Nesting multiple functions
 
 ## 5. Using Conversion Functions and Conditional Expressions
 
 - Applying the NVL, NULLIF, and COALESCE functions to data
 - Understanding implicit and explicit data type conversion
 - Using the TO_CHAR, TO_NUMBER, and TO_DATE conversion functions
-- Nesting multiple functions
 
 ## 6. Reporting Aggregated Data Using Group Functions
 
