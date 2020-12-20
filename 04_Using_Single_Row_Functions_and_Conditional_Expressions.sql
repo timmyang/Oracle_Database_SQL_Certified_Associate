@@ -5,6 +5,7 @@ Using Single-Row Functions to Customize Output
 - Manipulating numbers with the ROUND, TRUNC and MOD functions
 - Performing arithmetic with Date data
 - Manipulating dates with the Date function
+- Nesting multiple functions
 */
 
 /*
@@ -53,9 +54,9 @@ Single-row functions have five categories:
 - Date:
     MONTHS_BETWEEN, ADD_MONTHS, NEXT_DAY, LAST_DAY, ROUND, TRUNC
 - Conversion:
-    to_date, to_char
+    TO_DATE, TO_CHAR
 - General:
-    NVL, NVL2, nullif, coalesce, decode, case
+    NVL, NVL2, NULLIF, COALESCE, DECODE, CASE
 */
 
 
@@ -437,6 +438,6 @@ SELECT 'ahmed ali naser' full_name,
        SUBSTR('ahmed ali naser', 1, (INSTR('ahmed ali naser', ' ', 1, 1) - 1)) first_name,
        SUBSTR('ahmed ali naser', INSTR('ahmed ali naser', ' ', 1, 1) + 1,
             INSTR('ahmed ali naser', ' ', 1, 2) - 1 
-            - INSTR('ahmed ali naser', ' ', 1, 1)) middle_name,
+          - INSTR('ahmed ali naser', ' ', 1, 1)) middle_name,
        SUBSTR('ahmed ali naser', INSTR('ahmed ali naser', ' ', 1, 2) + 1) last_name
 FROM Dual;
