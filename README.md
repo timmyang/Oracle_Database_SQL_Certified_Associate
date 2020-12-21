@@ -36,9 +36,9 @@ Qualified candidates have knowledge of general computing concepts, knowledge of 
 
 ## 5. Using Conversion Functions and Conditional Expressions
 
-- Applying the NVL, NULLIF, and COALESCE functions to data
 - Understanding implicit and explicit data type conversion
 - Using the TO_CHAR, TO_NUMBER, and TO_DATE conversion functions
+- Applying the NVL, NULLIF, and COALESCE functions to data
 
 ## 6. Reporting Aggregated Data Using Group Functions
 
