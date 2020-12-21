@@ -102,6 +102,19 @@ Specifying suffixes to influence number display:
 - SPTH or THSP: spelled-out ordinal numbers (for example, DDSPTH for FOURTH)
 */
 
+
+/*
+Elements of the Time format model:
+
+- AM or PM: meridian indicator
+- A.M. or P.M.: meridian indicator with periods
+- HH or HH12: 12 hour format
+- HH24: 24 hour format
+- MI: minute (0-59)
+- SS: second (0-59)
+- SSSSS: seconds past midnight (0-86399)
+*/
+
 SELECT SYSDATE
 FROM Dual;
 
@@ -314,7 +327,7 @@ FROM Dual;
 --3 General functions
 
 -- NVL(expr1, expr2)
--- converts a (null) value to an actual value
+-- converts a NULL value to an actual value
 SELECT employee_id, first_name, commission_pct, 
        NVL(commission_pct, 0)
 FROM Employees;
@@ -359,20 +372,100 @@ SELECT employee_id, first_name, commission_pct, manager_id, salary,
 FROM Employees;
 
 
-
-
-
-
+--4 Conditional Expressions
 /*
-Elements of the Time format model:
-
-- AM or PM: meridian indicator
-- A.M. or P.M.: meridian indicator with periods
-- HH or HH12: 12 hour format
-- HH24: 24 hour format
-- MI: minute (0-59)
-- SS: second (0-59)
-- SSSSS: seconds past midnight (0-86399)
+- provide the use of the IF, THEN, ELSE logic within a SQL statement
+- use two methods:
+    CASE expression: complies with the ANSI SQL (more flexible)
+    DECODE function: specific to the Oracle syntax
 */
 
 
+--4.1 CASE function
+/*
+CASE expr WHEN comparison_expr1 THEN return_expr1
+         [WHEN comparison_expr2 THEN return_expr2]
+         [WHEN comparison_exprn THEN return_exprn]
+         [ELSE else_expr]
+END alias
+*/
+    
+SELECT first_name, job_id, salary,
+       CASE job_id WHEN 'IT_PROG' THEN salary * 1.10
+                   WHEN 'ST_CLERK' THEN salary * 1.15
+                   WHEN 'SA_REP' THEN salary * 1.20
+       ELSE salary
+       END "REVISED_SALARY"
+FROM Employees;
+
+-- you can make the condition after WHEN
+SELECT first_name, job_id, salary,
+       CASE WHEN job_id = 'IT_PROG' THEN salary * 1.10
+            WHEN job_id = 'ST_CLERK' THEN salary * 1.15
+            WHEN job_id = 'SA_REP' THEN salary * 1.20
+       ELSE salary
+       END "REVISED_SALARY"
+FROM Employees;
+
+-- if you don't put ELSE, then NULL will appear for that condition
+SELECT first_name, job_id, salary,
+       CASE job_id WHEN 'IT_PROG' THEN salary * 1.10
+                   WHEN 'ST_CLERK' THEN salary * 1.15
+                   WHEN 'SA_REP' THEN salary * 1.20
+       END REVISED_SALARY
+FROM Employees;
+
+-- correct order
+SELECT salary,
+       CASE WHEN salary > 10000 THEN 'salary > 10000'
+            WHEN salary > 4000 THEN 'salary > 4000'
+            WHEN salary > 3000 THEN 'salary > 3000'
+       END FFF
+FROM Employees;
+
+-- wrong order
+SELECT salary,
+       CASE WHEN salary > 3000 THEN 'salary > 3000'
+            WHEN salary > 4000 THEN 'salary > 4000'
+            WHEN salary > 10000 THEN 'salary > 10000'
+       END FFF
+FROM Employees;
+
+
+--4.2 DECODE function
+/*
+DECODE(col|expression, search1, result1
+                      [search2, result2, ..., ]
+                      [, defualt])
+*/
+
+SELECT last_name, job_id, salary,
+       DECODE(job_id, 'IT_PROG', salary * 1.10,
+                      'ST_CLERK', salary * 1.15,
+                      'SA_REP', salary * 1.20,
+              salary)
+              "REVISED_SALARY"
+FROM Employees;
+
+-- without the ELSE statement
+SELECT last_name, job_id, salary,
+       DECODE(job_id, 'IT_PROG', salary * 1.10,
+                      'ST_CLERK', salary * 1.15,
+                      'SA_REP', salary * 1.20
+              )
+              "REVISED_SALARY"
+FROM Employees;
+
+-- Example
+/*
+If salary < 3000 then tax = 0%
+If 3000 <= salary <= 7000 then tax = 10%
+If 7000 < salary then tax = 20%
+*/
+
+SELECT employee_id, first_name, salary,
+       CASE WHEN salary < 3000 THEN '0%'
+            WHEN salary BETWEEN 3000 AND 7000 THEN '10%'
+            WHEN salary > 7000 THEN '20%'
+       END tax
+FROM Employees;
