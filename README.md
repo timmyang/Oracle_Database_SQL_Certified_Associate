@@ -42,9 +42,9 @@ Qualified candidates have knowledge of general computing concepts, knowledge of 
 
 ## 6. Reporting Aggregated Data Using Group Functions
 
-- Restricting Group Results
-- Creating Groups of Data
 - Using Group Functions
+- Creating Groups of Data
+- Restricting Group Results
 
 ## 7. Displaying Data from Multiple Tables
 
