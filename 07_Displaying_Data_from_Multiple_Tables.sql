@@ -52,7 +52,7 @@ Types of Joins:
 */
 
 
--- Equijoin (Simple Joins / Inner Joins)
+--1 Equijoin (Simple Joins / Inner Joins)
 SELECT Employees.employee_id, Employees.first_name, Employees.department_id,
        Departments.department_name          -- department_id exists in both tables, so should not remove the table
 FROM Employees, Departments
@@ -66,7 +66,6 @@ FROM Employees, Departments
 WHERE Employees.department_id = Departments.department_id
       AND Employees.department_id > 40
 ORDER BY employee_id;
-
 -- using table Alias
 SELECT Emp.employee_id, Emp.first_name, Emp.department_id,
        Dept.department_name
@@ -82,3 +81,37 @@ FROM Employees Emp, Departments Dept, Locations Loc
 WHERE Emp.department_id = Dept.department_id 
       AND Dept.location_id = Loc.location_id
 ORDER BY employee_id;
+
+
+--2 Nonequijoin
+-- creating a new table
+CREATE TABLE Job_grades
+(
+grade_level VARCHAR2 (3),
+lowest_sal NUMBER,
+highest_sal NUMBER
+);
+
+-- insert the records for the table
+INSERT INTO Job_grades (grade_level, lowest_sal, highest_sal)
+VALUES ('A', 1000, 2999);
+INSERT INTO Job_grades (grade_level, lowest_sal, highest_sal)
+VALUES ('A', 3000, 5999);
+INSERT INTO Job_grades (grade_level, lowest_sal, highest_sal)
+VALUES ('A', 6000, 9999);
+INSERT INTO Job_grades (grade_level, lowest_sal, highest_sal)
+VALUES ('A', 10000, 14999);
+INSERT INTO Job_grades (grade_level, lowest_sal, highest_sal)
+VALUES ('A', 15000, 24999);
+INSERT INTO Job_grades (grade_level, lowest_sal, highest_sal)
+VALUES ('A', 25000, 40000);
+
+COMMIT;
+
+SELECT *
+FROM Job_grades;
+
+SELECT Emp.employee_id, Emp.first_name, Emp.salary,
+       Grades.grade_level
+FROM   Employees Emp, Job_grades Grades
+WHERE  Emp.salary BETWEEN Grades.lowest_sal AND Grades.highest_sal;
