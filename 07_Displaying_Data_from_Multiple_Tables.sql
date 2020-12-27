@@ -3,7 +3,7 @@
 Displaying Data from Multiple Tables
 - Understanding and Using Cartesian Products
 - Using various types of Joins
-- Using non Equijoins
+- Using Non Equijoins
 - Using Outer Joins
 - Using Self-Joins
 */
@@ -66,6 +66,7 @@ FROM     Employees, Departments
 WHERE    Employees.department_id = Departments.department_id
          AND Employees.department_id > 40
 ORDER BY employee_id;
+
 -- using table Alias
 SELECT   Emp.employee_id, Emp.first_name, Emp.department_id,
          Dept.department_name
@@ -164,18 +165,18 @@ FROM     Employees
 WHERE    salary > 2500;
 
 --
-SELECT   Emp.employee_id,     Dept.department_name,   Loc. city,      Cont.country_name,      
-         Emp.first_name,      Dept.location_id,    
-         Emp.department_id
-         
-FROM     Employees Emp,       Departments Dept,       Locations Loc,  Countries Cont
-
-WHERE    Emp.department_id = Dept.department_id(+)
+SELECT   Emp.employee_id,       Emp.first_name,       Emp.department_id,
+         Dept.department_name,  Dept.location_id, 
+         Loc. city,      
+         Cont.country_name      
+FROM     Employees Emp,         Departments Dept,     Locations Loc,      Countries Cont
+WHERE    Emp.department_id    = Dept.department_id(+)
          AND Dept.location_id = Loc.location_id(+)
-         AND Loc.country_id = Cont.country_id(+)
-         AND salary > 2500
-
+         AND Loc.country_id   = Cont.country_id(+)
+         AND salary           > 2500
 ORDER BY employee_id;
+
+
 
 
 --4 Self Joins
@@ -194,7 +195,7 @@ FROM   Employees Worker, Employees Manager
 WHERE  Worker.manager_id = Manager.employee_id(+);
 
 
---5 SQL: 1999 Syntax
+-- SQL: 1999 Syntax
 /*
 - Cross Joins
 - Natural Joins
@@ -203,7 +204,7 @@ WHERE  Worker.manager_id = Manager.employee_id(+);
 - Arbitrary Join Conditions for Outer Joins
 */
 
--- Cross Join
+--5 CROSS JOIN
 -- same as Cartesian Product
 SELECT   last_name, department_name
 FROM     Employees, Departments;
@@ -212,3 +213,107 @@ FROM     Employees, Departments;
 SELECT   last_name, department_name
 FROM     Employees CROSS JOIN Departments;
 
+
+--6 NATURAL JOINs
+SELECT   Departments.department_id, Departments.department_name,
+         location_id,               -- you do not put the prefix table name in the match column
+         Locations.city         
+FROM     Departments NATURAL JOIN Locations;
+
+-- NATURAL JOIN using the old format, Equijoin (same as above)
+SELECT   Departments.department_id, Departments.department_name,
+         Departments.location_id,   -- here you should put the prefix   
+         Locations.city          
+FROM     Departments, Locations
+WHERE    Departments.location_id = Locations.location_id;
+
+
+--7 USING Clause
+SELECT   Employees.employee_id, Employees.first_name,
+         department_id,              -- no prefix table name in the match column
+         Departments.department_name
+FROM     Employees JOIN Departments
+         USING (department_id)
+ORDER BY employee_id;
+
+-- using Equijoin, it is the same as the above
+SELECT   Employees.employee_id, Employees.first_name, Employees.department_id,
+         Departments.department_name
+FROM     Employees, Departments
+WHERE    Employees.department_id = Departments.department_id
+ORDER BY employee_id;
+
+
+--8 ON Clause
+SELECT   Employees.employee_id,     Employees.first_name,
+         Departments.department_id, Departments.department_name     -- prefix should be used
+FROM     Employees JOIN Departments
+         ON Employees.department_id = Departments.department_id
+ORDER BY employee_id;
+
+-- the above is the same as (Equijoin)
+SELECT   Employees.employee_id,     Employees.first_name,
+         Departments.department_id, Departments.department_name
+FROM     Employees,                 Departments
+WHERE    Employees.department_id = Departments.department_id
+ORDER BY employee_id;
+
+-- (Nonequijioin)
+SELECT   Emp.employee_id,   Emp.first_name,     Emp.salary, 
+         Grades.grade_level
+FROM     Employees Emp JOIN Job_grades Grades
+         ON Emp.salary BETWEEN Grades.lowest_sal AND Grades.highest_sal;
+
+-- (Self Join)
+SELECT   Worker.employee_id, Worker.first_name, Worker.manager_id,
+         Manager.first_name
+FROM     Employees Worker JOIN Employees Manager
+         ON Worker.manager_id = Manager.employee_id;
+
+-- Joining 3 tables
+SELECT   Emp.Employee_id,       Emp.first_name,     Emp.department_id,
+         Dept.department_name,  Dept.location_id,
+         Loc.city
+FROM     Employees Emp JOIN Departments Dept
+         ON Emp.department_id = Dept.department_id
+                       JOIN Locations Loc
+         ON Dept.location_id = Loc.location_id
+ORDER BY employee_id;
+
+
+--9 LEFT OUTER JOIN
+SELECT   Emp.employee_id,       Emp.first_name,     Emp.department_id,
+         Dept.department_name
+FROM     Employees Emp LEFT OUTER JOIN Departments Dept
+         ON Emp.department_id = Dept.department_id
+ORDER BY employee_id;
+
+-- the above is the same as
+SELECT   Emp.employee_id,       Emp.first_name,     Emp.department_id,
+         Dept.department_name
+FROM     Employees Emp,         Departments Dept
+WHERE    Emp.department_id = Dept.department_id (+)
+ORDER BY employee_id;
+
+
+--10 RIGHT OUTER JOIN
+SELECT   Emp.employee_id,       Emp.first_name,     Emp.department_id,
+         Dept.department_name
+FROM     Employees Emp RIGHT OUTER JOIN Departments Dept
+         ON Emp.department_id = Dept.department_id
+ORDER BY employee_id;
+
+-- the above is the same as
+SELECT   Emp.employee_id,       Emp.first_name,     Emp.department_id,
+         Dept.department_name
+FROM     Employees Emp,         Departments Dept
+WHERE    Emp.department_id (+) = Dept.department_id
+ORDER BY employee_id;
+
+
+--11 FULL OUTER JOIN
+SELECT   Emp.employee_id,       Emp.first_name,     Emp.department_id,
+         Dept.department_name
+FROM     Employees Emp FULL OUTER JOIN Departments Dept
+         ON Emp.department_id = Dept.department_id
+ORDER BY employee_id;
