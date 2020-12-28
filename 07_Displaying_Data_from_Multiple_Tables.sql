@@ -21,17 +21,17 @@ A Cartesian Product is formed when:
 To avoid a Cartesian product, always include a valid JOIN condition in a WHERE clause
 */
 
-SELECT employee_id, first_name, department_id       -- department_id is a foreign key to the Departments table
-FROM   Employees;
+SELECT   employee_id, first_name, department_id       -- department_id is a foreign key to the Departments table
+FROM     Employees;
 
-SELECT department_id, department_name
-FROM   Departments;
+SELECT   department_id, department_name
+FROM     Departments;
 
 -- Cartesian Product
-SELECT   Employees.employee_id, Employees.first_name, Employees.last_name,
+SELECT   Employees.employee_id,     Employees.first_name,       Employees.last_name,
          Departments.department_id, Departments.department_name
-FROM     Employees, Departments                         -- 107 rows (Employees) X 27 rows (Departments) = 2889 rows
-ORDER BY employee_id;                               -- each row in Employees are joined with each row in Departments
+FROM     Employees,                 Departments                 -- 107 rows (Employees) X 27 rows (Departments) = 2889 rows
+ORDER BY employee_id;                                           -- each row in Employees are joined with each row in Departments
 
 
 /*
@@ -53,34 +53,34 @@ Types of Joins:
 
 
 --1 Equijoin (Simple Joins / Inner Joins)
-SELECT   Employees.employee_id, Employees.first_name, Employees.department_id,
-         Departments.department_name          -- department_id exists in both tables, so should not remove the table
-FROM     Employees, Departments
-WHERE    Employees.department_id = Departments.department_id
+SELECT   Employees.employee_id,         Employees.first_name,       Employees.department_id,
+         Departments.department_name -- department_id exists in both tables, so should not remove the table
+FROM     Employees,                     Departments
+WHERE    Employees.department_id      = Departments.department_id
 ORDER BY employee_id;
 
 -- using additional conditions
-SELECT   Employees.employee_id, Employees.first_name, Employees.department_id,
-         Departments.department_id, Departments.department_name
-FROM     Employees, Departments
-WHERE    Employees.department_id = Departments.department_id
+SELECT   Employees.employee_id,        Employees.first_name,        Employees.department_id,
+         Departments.department_id,    Departments.department_name
+FROM     Employees,                    Departments
+WHERE    Employees.department_id     = Departments.department_id
          AND Employees.department_id > 40
 ORDER BY employee_id;
 
 -- using table Alias
-SELECT   Emp.employee_id, Emp.first_name, Emp.department_id,
+SELECT   Emp.employee_id,              Emp.first_name,              Emp.department_id,
          Dept.department_name
-FROM     Employees Emp, Departments Dept
-WHERE    Emp.department_id = Dept.department_id
+FROM     Employees Emp,                Departments Dept
+WHERE    Emp.department_id           = Dept.department_id
 ORDER BY employee_id;
 
 -- joining more than 2 tables
-SELECT   Emp.employee_id, Emp.first_name, Emp.department_id,
-         Dept.department_name, Dept.location_id,
+SELECT   Emp.employee_id,              Emp.first_name,              Emp.department_id,
+         Dept.department_name,         Dept.location_id,
          Loc.city
-FROM     Employees Emp, Departments Dept, Locations Loc
-WHERE    Emp.department_id = Dept.department_id 
-         AND Dept.location_id = Loc.location_id
+FROM     Employees Emp,                Departments Dept,            Locations Loc
+WHERE    Emp.department_id           = Dept.department_id 
+         AND Dept.location_id        = Loc.location_id
 ORDER BY employee_id;
 
 
@@ -112,42 +112,42 @@ COMMIT;
 SELECT *
 FROM Job_grades;
 
-SELECT Emp.employee_id, Emp.first_name, Emp.salary,
+SELECT Emp.employee_id,     Emp.first_name,     Emp.salary,
        Grades.grade_level
-FROM   Employees Emp, Job_grades Grades
+FROM   Employees Emp,       Job_grades Grades
 WHERE  Emp.salary BETWEEN Grades.lowest_sal AND Grades.highest_sal;
 
 -- the above is the same as
-SELECT Emp.employee_id, Emp.first_name, Emp.salary, 
+SELECT Emp.employee_id,     Emp.first_name,     Emp.salary, 
        Grades.grade_level
-FROM   Employees Emp, Job_grades Grades
-WHERE  Emp.salary >= Grades.lowest_sal
-       AND Emp.salary <= Grades.highest_sal;
+FROM   Employees Emp,       Job_grades Grades
+WHERE  Emp.salary        >= Grades.lowest_sal
+       AND Emp.salary    <= Grades.highest_sal;
        
 
 --3 Outer Join (+), Casel
 -- all data on the "opposite" side of (+) will appear
 
 -- this is an Equijoin example 
-SELECT   Employees.employee_id, Employees.first_name, Employees.department_id,
+SELECT   Employees.employee_id,         Employees.first_name,       Employees.department_id,
          Departments.department_name
-FROM     Employees, Departments
-WHERE    Employees.department_id = Departments.department_id
+FROM     Employees,                     Departments
+WHERE    Employees.department_id      = Departments.department_id
 ORDER BY employee_id;
 
 -- here is the Outer Join 
 -- Employees is the main table
-SELECT   Employees.employee_id, Employees.first_name, Employees.department_id,
+SELECT   Employees.employee_id,         Employees.first_name,       Employees.department_id,
          Departments.department_name
-FROM     Employees, Departments
-WHERE    Employees.department_id = Departments.department_id(+)
+FROM     Employees,                     Departments
+WHERE    Employees.department_id      = Departments.department_id(+)
 ORDER BY employee_id;
 
 -- Departments is the main table
-SELECT   Employees.employee_id, Employees.first_name, Employees.department_id,
+SELECT   Employees.employee_id,         Employees.first_name,       Employees.department_id,
          Departments.department_name
-FROM     Employees, Departments
-WHERE    Employees.department_id(+) = Departments.department_id
+FROM     Employees,                     Departments
+WHERE    Employees.department_id(+)  = Departments.department_id
 ORDER BY employee_id;
 
 -- Exercise
@@ -180,19 +180,19 @@ ORDER BY employee_id;
 
 
 --4 Self Joins
-SELECT employee_id, first_name, manager_id
-FROM   Employees;
+SELECT   employee_id, first_name, manager_id
+FROM     Employees;
 
 -- I want to display the manager name, so it is a Self Join
-SELECT Worker.employee_id, Worker.first_name, Worker.manager_id,
-       Manager.first_name
-FROM   Employees Worker, Employees Manager
-WHERE  Worker.manager_id = Manager.employee_id;
+SELECT   Worker.employee_id,    Worker.first_name,  Worker.manager_id,
+         Manager.first_name
+FROM     Employees Worker,      Employees Manager
+WHERE    Worker.manager_id    = Manager.employee_id;
 
-SELECT Worker.employee_id, Worker.first_name, Worker.manager_id,
-       Manager.first_name
-FROM   Employees Worker, Employees Manager
-WHERE  Worker.manager_id = Manager.employee_id(+);
+SELECT   Worker.employee_id,    Worker.first_name,  Worker.manager_id,
+         Manager.first_name
+FROM     Employees Worker,      Employees Manager
+WHERE    Worker.manager_id    = Manager.employee_id(+);
 
 
 -- SQL: 1999 Syntax
@@ -225,11 +225,11 @@ SELECT   Departments.department_id, Departments.department_name,
          Departments.location_id,   -- here you should put the prefix   
          Locations.city          
 FROM     Departments, Locations
-WHERE    Departments.location_id = Locations.location_id;
+WHERE    Departments.location_id  = Locations.location_id;
 
 
 --7 USING Clause
-SELECT   Employees.employee_id, Employees.first_name,
+SELECT   Employees.employee_id,         Employees.first_name,
          department_id,              -- no prefix table name in the match column
          Departments.department_name
 FROM     Employees JOIN Departments
@@ -237,69 +237,69 @@ FROM     Employees JOIN Departments
 ORDER BY employee_id;
 
 -- using Equijoin, it is the same as the above
-SELECT   Employees.employee_id, Employees.first_name, Employees.department_id,
+SELECT   Employees.employee_id,         Employees.first_name,       Employees.department_id,
          Departments.department_name
-FROM     Employees, Departments
-WHERE    Employees.department_id = Departments.department_id
+FROM     Employees,                     Departments
+WHERE    Employees.department_id      = Departments.department_id
 ORDER BY employee_id;
 
 
 --8 ON Clause
-SELECT   Employees.employee_id,     Employees.first_name,
-         Departments.department_id, Departments.department_name     -- prefix should be used
+SELECT   Employees.employee_id,         Employees.first_name,
+         Departments.department_id,     Departments.department_name     -- prefix should be used
 FROM     Employees JOIN Departments
-         ON Employees.department_id = Departments.department_id
+         ON Employees.department_id   = Departments.department_id
 ORDER BY employee_id;
 
 -- the above is the same as (Equijoin)
 SELECT   Employees.employee_id,     Employees.first_name,
          Departments.department_id, Departments.department_name
 FROM     Employees,                 Departments
-WHERE    Employees.department_id = Departments.department_id
+WHERE    Employees.department_id  = Departments.department_id
 ORDER BY employee_id;
 
 -- (Nonequijioin)
 SELECT   Emp.employee_id,   Emp.first_name,     Emp.salary, 
          Grades.grade_level
-FROM     Employees Emp JOIN Job_grades Grades
+FROM     Employees Emp      JOIN Job_grades Grades
          ON Emp.salary BETWEEN Grades.lowest_sal AND Grades.highest_sal;
 
 -- (Self Join)
-SELECT   Worker.employee_id, Worker.first_name, Worker.manager_id,
+SELECT   Worker.employee_id,    Worker.first_name, Worker.manager_id,
          Manager.first_name
-FROM     Employees Worker JOIN Employees Manager
+FROM     Employees Worker       JOIN Employees Manager
          ON Worker.manager_id = Manager.employee_id;
 
 -- Joining 3 tables
 SELECT   Emp.Employee_id,       Emp.first_name,     Emp.department_id,
          Dept.department_name,  Dept.location_id,
          Loc.city
-FROM     Employees Emp JOIN Departments Dept
+FROM     Employees Emp          JOIN Departments Dept
          ON Emp.department_id = Dept.department_id
-                       JOIN Locations Loc
-         ON Dept.location_id = Loc.location_id
+                                JOIN Locations Loc
+         ON Dept.location_id  = Loc.location_id
 ORDER BY employee_id;
 
 
 --9 LEFT OUTER JOIN
-SELECT   Emp.employee_id,       Emp.first_name,     Emp.department_id,
+SELECT   Emp.employee_id,       Emp.first_name,          Emp.department_id,
          Dept.department_name
-FROM     Employees Emp LEFT OUTER JOIN Departments Dept
-         ON Emp.department_id = Dept.department_id
+FROM     Employees Emp          LEFT OUTER JOIN Departments Dept
+         ON Emp.department_id   = Dept.department_id
 ORDER BY employee_id;
 
 -- the above is the same as
 SELECT   Emp.employee_id,       Emp.first_name,     Emp.department_id,
          Dept.department_name
 FROM     Employees Emp,         Departments Dept
-WHERE    Emp.department_id = Dept.department_id (+)
+WHERE    Emp.department_id    = Dept.department_id(+)
 ORDER BY employee_id;
 
 
 --10 RIGHT OUTER JOIN
-SELECT   Emp.employee_id,       Emp.first_name,     Emp.department_id,
+SELECT   Emp.employee_id,       Emp.first_name,         Emp.department_id,
          Dept.department_name
-FROM     Employees Emp RIGHT OUTER JOIN Departments Dept
+FROM     Employees Emp          RIGHT OUTER JOIN Departments Dept
          ON Emp.department_id = Dept.department_id
 ORDER BY employee_id;
 
@@ -307,13 +307,14 @@ ORDER BY employee_id;
 SELECT   Emp.employee_id,       Emp.first_name,     Emp.department_id,
          Dept.department_name
 FROM     Employees Emp,         Departments Dept
-WHERE    Emp.department_id (+) = Dept.department_id
+WHERE    Emp.department_id(+) = Dept.department_id
 ORDER BY employee_id;
 
 
 --11 FULL OUTER JOIN
 SELECT   Emp.employee_id,       Emp.first_name,     Emp.department_id,
          Dept.department_name
-FROM     Employees Emp FULL OUTER JOIN Departments Dept
+FROM     Employees Emp          FULL OUTER JOIN Departments Dept
          ON Emp.department_id = Dept.department_id
 ORDER BY employee_id;
+

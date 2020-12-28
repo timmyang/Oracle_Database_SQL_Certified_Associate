@@ -148,6 +148,7 @@ ORDER BY department_id;
 
 --6 HAVING function
 -- you cannot use WHERE to restrict groups (very important)
+-- this returns an error
 SELECT department_id, SUM(salary)
 FROM Employees
 WHERE SUM(salary) > 156400
