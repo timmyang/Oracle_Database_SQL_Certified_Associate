@@ -62,11 +62,11 @@ Qualified candidates have knowledge of general computing concepts, knowledge of 
 
 ## 9. Using SET Operators
 
-- Matching the SELECT statements
-- Using the ORDER BY clause in set operations
+- Using The UNION and UNION ALL operators
 - Using The INTERSECT operator
 - Using The MINUS operator
-- Using The UNION and UNION ALL operators
+- Matching the SELECT statements
+- Using the ORDER BY clause in set operations
 
 ## 10. Managing Tables using DML statements
 
