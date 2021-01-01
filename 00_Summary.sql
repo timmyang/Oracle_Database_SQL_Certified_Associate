@@ -45,17 +45,18 @@ SELECT count(*)/count(1)
 
 
 -- general SELECT statement
-SELECT     [DISTINCT] *, column1 [||] column2 [AS] alias
-FROM       table1                                        -------------------------- NOT ---------------------------
-WHERE      column1 [=, >, <, != (&var_name, &&var_name), BETWEEN ... AND ..., IN(), LIKE '_%' (ESCAPE) '/', IS NULL] 
-           (subquery)
-           [AND, OR]
-[GROUP BY] column1
-[HAVING]   GROUP_FUNCTION() + condition
-ORDER BY   column1/alias/index [ASC, DESC, NULLS FIRST], column2
-[OFFSET    row_num ROWS] FETCH FIRST row_num [PERCENT] ROWS ONLY/WITH TIES
-                         [FETCH NEXT]
+SELECT   [DISTINCT] *, column1 [||] column2 [AS] alias
+FROM     table1                                        -------------------------- NOT ---------------------------
+WHERE    column1 [=, >, <, != (&var_name, &&var_name), BETWEEN ... AND ..., IN(), LIKE '_%' (ESCAPE) '/', IS NULL] 
+         (subquery)
+         [AND, OR]
+GROUP BY column1
+HAVING   GROUP_FUNCTION() + condition
+ORDER BY column1/alias/index [ASC, DESC, NULLS FIRST], column2
+[OFFSET  row_num ROWS] FETCH FIRST row_num [PERCENT] ROWS ONLY/WITH TIES
+                       [FETCH NEXT]
 
+UNION/UNION ALL/INTERSECT/MINUS
 
 -- 4: Single-Row Functions (that can be applied to SELECT, WHERE, ORDER BY)
 
@@ -183,3 +184,4 @@ ORDER BY   column1/alias/index [ASC, DESC, NULLS FIRST], column2
 
 -- 8: Using Subqueries to Solve Queries
 
+-- 9: Using the Set Operators
