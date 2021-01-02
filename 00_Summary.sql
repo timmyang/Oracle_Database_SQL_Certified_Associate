@@ -26,8 +26,8 @@
         OR
 
 
-DESCRIBE table1
-DESC table1
+DESCRIBE Table1
+DESC Table1
 
 
 -- Subsitution Variable
@@ -45,16 +45,16 @@ SELECT count(*)/count(1)
 
 
 -- general SELECT statement
-SELECT   [DISTINCT] *, column1 [||] column2 [AS] alias
-FROM     table1                                        -------------------------- NOT ---------------------------
-WHERE    column1 [=, >, <, != (&var_name, &&var_name), BETWEEN ... AND ..., IN(), LIKE '_%' (ESCAPE) '/', IS NULL] 
-         (subquery)
-         [AND, OR]
-GROUP BY column1
-HAVING   GROUP_FUNCTION() + condition
-ORDER BY column1/alias/index [ASC, DESC, NULLS FIRST], column2
-[OFFSET  row_num ROWS] FETCH FIRST row_num [PERCENT] ROWS ONLY/WITH TIES
-                       [FETCH NEXT]
+SELECT     [DISTINCT] *, column1 [||] column2 [AS] alias
+FROM       Table1                                        -------------------------- NOT ---------------------------
+WHERE      column1 [=, >, <, != (&var_name, &&var_name), BETWEEN ... AND ..., IN(), LIKE '_%' (ESCAPE) '/', IS NULL] 
+           (subquery) SELECT(...)
+           [AND, OR]
+[GROUP BY] column1
+[HAVING]   GROUP_FUNCTION() + condition
+ORDER BY   column1/alias/index [ASC, DESC, NULLS FIRST], column2
+[OFFSET    row_num ROWS] FETCH FIRST row_num [PERCENT] ROWS ONLY/WITH TIES
+                         [FETCH NEXT]
 
 UNION/UNION ALL/INTERSECT/MINUS
 
@@ -106,7 +106,7 @@ UNION/UNION ALL/INTERSECT/MINUS
                              WHEN 'value3' THEN opeartion3
                 [ELSE operation4]
                 END  alias
-        FROM    table1
+        FROM    Table1
     
     --2 DECODE expression (Oracle syntax)
         SELECT  column1, column2
@@ -116,13 +116,13 @@ UNION/UNION ALL/INTERSECT/MINUS
                       [operation4]
                       )
                       alias
-        FROM    table1;
+        FROM    Table1;
 
 
 -- 6: Multiple-Row functions [= Group Functions] (that is placed after SELECT)
 
     SELECT     COUNT/AVG/MAX/MIN/SUM([DISTINCT/ALL] column1) -- group function
-    FROM       table1
+    FROM       Table1
     GROUP BY   column1
     [HAVING]   GROUP_FUNCTION() + condition                  -- act as WHERE for GROUP BY
     [ORDER BY] column1
@@ -137,51 +137,90 @@ UNION/UNION ALL/INTERSECT/MINUS
             Outcome: table1_rows X table2_rows
     
     --2 Equijoin
-            FROM  table1,             table2
-            WHERE table1.column1    = table2.column1
+            FROM  Table1,             Table2
+            WHERE Table1.column1    = Table2.column1
         
         -- OR
-            FROM  table1              JOIN table2
+            FROM  Table1              JOIN Table2
                   ON table1.column1 = table2.column1
     
     --3 Non Equijoin
-            FROM  table1,             table2
-            WHERE table1.column1      BETWEEN table2.column2 AND table2.column3
+            FROM  Table1,             Table2
+            WHERE Table1.column1      BETWEEN Table2.column2 AND Table2.column3
         
         -- OR
-            FROM  table1              JOIN table2
-                  ON table1.column1   BETWEEN table2.column2 AND table2.column3
+            FROM  Table1              JOIN Table2
+                  ON Table1.column1   BETWEEN Table2.column2 AND Table2.column3
     
     --4 Outer Join
         -- Left Outer Join
-            FROM  table1,             table2
-            WHERE table1.column1    = table2.column1(+)
+            FROM  Table1,             Table2
+            WHERE Table1.column1    = Table2.column1(+)
             
             -- OR
-            FROM table1               LEFT OUTER JOIN table2
-                 ON table1.column1  = table2.column1
+            FROM Table1               LEFT OUTER JOIN Table2
+                 ON Table1.column1  = Table2.column1
         
         -- Right Outer Join
-            FROM  table1,             table2
-            WHERE table1.column1(+) = table2.column1
+            FROM  Table1,             Table2
+            WHERE Table1.column1(+) = Table2.column1
             
             -- OR
-            FROM table1               RIGHT OUTER JOIN table2
-                 ON table1.column1  = table2.column1
+            FROM Table1               RIGHT OUTER JOIN Table2
+                 ON Table1.column1  = Table2.column1
                  
         -- Full Outer Join
-            FROM table1               FULL OUTER JOIN table2
-                 ON table1.column1  = table2.column1
+            FROM Table1               FULL OUTER JOIN Table2
+                 ON Table1.column1  = Table2.column1
         
     --5 Self Join
-            FROM  table1 alias.1,     table1 alias.2
+            FROM  Table1 alias1,     Table1 alias.2
             WHERE alias.1.column3   = alias.2.column1
             
             -- OR
-            FROM table1 alias.1       JOIN table1 alias.2
+            FROM Table1 alias.1       JOIN Table1 alias.2
                  ON alias.1.column3 = alias.2.column1
 
 
 -- 8: Using Subqueries to Solve Queries
+    -- if the Subquery returns nothing, 
+    -- the whole SELECT statement will not return anything
 
+    --1 a Single-Row Subquery (must return a single value)
+        SELECT   *
+        FROM     Table1
+        WHERE    column1 > (SELECT   column1
+                            FROM     Table1
+                            WHERE    column2 = value1);
+    
+        -- with a Multiple-Row function                    
+        SELECT   *
+        FROM     Table1
+        WHERE    column1 = (SELECT   MAX(salary)
+                            FROM     Table2);
+                        
+        -- with HAVING
+        SELECT   column1, COUNT(column2)
+        FROM     Table1
+        GROUP BY column1
+        HAVING   COUNT(column2) > (SELECT   COUNT(*)
+                                FROM     Table1
+                                WHERE    column1 = value1)
+        ORDER BY column2;
+    
+    --2 a Multiple-Row Subquery (returns more than one value)
+        -- uses multiple-row Comparison Operators (IN, ANY, ALL)
+        
+        SELECT   column1, column2, column3
+        FROM     Table1
+        WHERE    column1 IN(SELECT   column1
+                            FROM     Table1
+                            WHERE    column2 = value1);
+                            
+        SELECT   column1, column2, column3
+        FROM     Table1
+        WHERE    column1 < ANY/ALL(SELECT   column1
+                                   FROM     Table1
+                                   WHERE    column2 = value1);
+    
 -- 9: Using the Set Operators

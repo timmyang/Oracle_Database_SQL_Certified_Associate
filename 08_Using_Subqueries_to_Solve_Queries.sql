@@ -43,7 +43,7 @@ SELECT   *
 FROM     Employees
 WHERE    salary   = (SELECT   MAX(salary)
                      FROM     Employees);
-                   
+          
 -- Subquery with HAVING
 SELECT   department_id,        COUNT(employee_id)
 FROM     Employees

@@ -6,7 +6,7 @@ SELECT name, con_id
 FROM v$pdbs;
 
 --3
-Alter session set container=orclpdb;
+ALTER SESSION SET CONTAINER = orclpdb;
 
 --4
 SHOW con_name;
@@ -16,11 +16,11 @@ SELECT name, open_mode
 FROM v$pdbs;
 
 --6
-ALTER PLUGGABLE DATABASE open;
+ALTER PLUGGABLE DATABASE OPEN;
 
 --7
 SELECT *
 FROM all_users;
 
 --8
-ALTER USER hr identified by hr account unlock;
+ALTER USER hr IDENTIFIED BY hr ACCOUNT UNLOCK;
