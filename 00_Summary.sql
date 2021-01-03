@@ -5,7 +5,10 @@
     --2 Clause
         WHERE, ORDER BY, FETCH, HAVING, TOP, GROUP BY
 
+
 -- Operator:
+    --0 parentheses 
+        ()
     --1 Arithmetic 
         +, -, *, /
     --2 Concatenation
@@ -18,7 +21,7 @@
         BETWEEN ... AND ... (NOT)
     --6
         EQUAL TO
-    --7
+    --7 Logical
         NOT
     --8
         AND
@@ -47,33 +50,86 @@ SELECT count(*)/count(1)
 -- general SELECT statement
 SELECT     [DISTINCT] *, column1 [||] column2 [AS] alias
 FROM       Table1                                        -------------------------- NOT ---------------------------
-WHERE      column1 [=, >, <, != (&var_name, &&var_name), BETWEEN ... AND ..., IN(), LIKE '_%' (ESCAPE) '/', IS NULL] 
+WHERE      column1 [=, >, <, != (&var_name, &&var_name), BETWEEN ... AND ..., IN(), LIKE '_%' (ESCAPE '/'), IS NULL] 
            (subquery) SELECT(...)
            [AND, OR]
 [GROUP BY] column1
 [HAVING]   GROUP_FUNCTION() + condition
-ORDER BY   column1/alias/index [ASC, DESC, NULLS FIRST], column2
+ORDER BY   column1/alias/index/expression [ASC, DESC, NULLS FIRST], column2
 [OFFSET    row_num ROWS] FETCH FIRST row_num [PERCENT] ROWS ONLY/WITH TIES
                          [FETCH NEXT]
 
 UNION/UNION ALL/INTERSECT/MINUS
 
+-- 2: Retrieving Data using the SQL SELECT Statement
+
+    SELECT   *
+    FROM     Table1
+
 -- 3: Restricting and Sorting Data
     
-    -- Comparison  Operators:
-        =, >, >=, <, <=, <>, !=
-        [NOT] BETWEEN ... AND ... (inclusive)
+    --1 WHERE clause
+        WHERE  column1 = 'Character';    -- case sensitive, != 'character'
+        WHERE  column1 = 'date-for-mat'; -- year, yyyy, yy, month, mm, mon, day, dy, dd
+         
+        -- Comparison  Operators
+    
+            WHERE  column1 =, >, >=, <, <=, <>, != value1;
         
-        [NOT] IN() 
-            -- 
-            WHERE    column1 IN(value1, value2, NULL); -- NULL will be ignored
-            WHERE    column1 NOT IN(NULL); -- this is same as != ALL 
+            BETWEEN ... AND ...             -- ... values are inclusive
+                --
+                WHERE  column1 BETWEEN value1 AND value2;
+                WHERE  column1 BETWEEN 'char1' AND 'char2';
+            
+            IN 
+                -- 
+                WHERE  column1 IN(value1, value2, NULL); -- NULL will be ignored
+                WHERE  column1 NOT IN(NULL); -- same as != ALL (returns nothing)
            
-        [NOT] LIKE
+            LIKE
+                --
+                WHERE  column1 LIKE 's%';   -- starts with s
+                                    '%s';   -- ends with s
+                                    '%s%';  -- includes s
+                                    '_s';   -- has s in its second letter
+                                    '__s';  -- has s in its third letter
+                               LIKE 's/_%' ESCAPE '/'; -- means starts with s_
+                               LIKE 's[%%' ESCAPE '['; -- means starts with s%
+            IS NULL
+                --
+                WHERE  column1 IS NULL;     -- different from WHERE column1 = ''
         
-        IS [NOT] NULL
+        -- Logical operators
+            -- NOT
+            NOT BETWEEN ... AND..., NOT IN, NOT LIKE, IS NOT NULL
         
+            -- AND
+            WHERE  column1 = value1
+                   AND column2 = value2;
+        
+            -- OR
+            WHERE  column1 = value1
+                   OR column2 = value2;
+               
+            -- AND > OR
+            WHERE  column1 = value1 
+                   OR column1 = value2 AND column2 = value3;
 
+    --2 ORDER BY clause
+    
+        SELECT   *
+        FROM     Table1
+        [WHERE]  column1 = value1
+        ORDER BY column1/alias/index/expression [ASC, DESC], column2; -- default = ASC, ascending
+        
+        -- NULL values
+            -- by default, NULL comes last in ASC (can change by NULLS FIRST)
+            -- by default, NULL comes first in DESC
+            ORDER BY column1 [NULLS FIRST];
+    
+    --3 FETCH clause
+    
+        
 -- 4: Single-Row Functions (that can be applied to SELECT, WHERE, ORDER BY)
 
     --1 Character
@@ -240,3 +296,13 @@ UNION/UNION ALL/INTERSECT/MINUS
                                    WHERE    column2 = value1);
     
 -- 9: Using the Set Operators
+
+
+
+-- 99: Questions
+    --3 Restricting and Sorting Data
+        -- LIKE operator
+            -- Does the value in column1 that starts with s 
+            -- will be included in the following result?
+            WHERE  column1 LIKE '%s%';  -- includes s
+        
