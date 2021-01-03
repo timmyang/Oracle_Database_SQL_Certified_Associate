@@ -58,6 +58,22 @@ ORDER BY   column1/alias/index [ASC, DESC, NULLS FIRST], column2
 
 UNION/UNION ALL/INTERSECT/MINUS
 
+-- 3: Restricting and Sorting Data
+    
+    -- Comparison  Operators:
+        =, >, >=, <, <=, <>, !=
+        [NOT] BETWEEN ... AND ... (inclusive)
+        
+        [NOT] IN() 
+            -- 
+            WHERE    column1 IN(value1, value2, NULL); -- NULL will be ignored
+            WHERE    column1 NOT IN(NULL); -- this is same as != ALL 
+           
+        [NOT] LIKE
+        
+        IS [NOT] NULL
+        
+
 -- 4: Single-Row Functions (that can be applied to SELECT, WHERE, ORDER BY)
 
     --1 Character
@@ -204,8 +220,8 @@ UNION/UNION ALL/INTERSECT/MINUS
         FROM     Table1
         GROUP BY column1
         HAVING   COUNT(column2) > (SELECT   COUNT(*)
-                                FROM     Table1
-                                WHERE    column1 = value1)
+                                   FROM     Table1
+                                   WHERE    column1 = value1)
         ORDER BY column2;
     
     --2 a Multiple-Row Subquery (returns more than one value)
