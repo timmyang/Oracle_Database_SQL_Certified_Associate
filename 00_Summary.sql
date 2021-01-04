@@ -129,6 +129,14 @@ UNION/UNION ALL/INTERSECT/MINUS
     
     --3 FETCH clause
     
+        SELECT   column1, column2
+        FROM     Table1
+        ORDER BY column1
+        FETCH FIRST row_num [PERCENT] ROWS ONLY/WITH TIES;
+        
+        -- to skip the first n rows
+        OFFSET row_num ROWS FETCH NEXT row_num ROWS ONLY/WITH TIES;
+    
         
 -- 4: Single-Row Functions (that can be applied to SELECT, WHERE, ORDER BY)
 
