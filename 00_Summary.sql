@@ -137,6 +137,15 @@ UNION/UNION ALL/INTERSECT/MINUS
         -- to skip the first n rows
         OFFSET row_num ROWS FETCH NEXT row_num ROWS ONLY/WITH TIES;
     
+    --4 Substitution variables
+    
+        -- discarded after used
+        WHERE  column1 = %var_name;
+        -- won't be discarded after used
+        WHERE  column1 = %%var_name;
+        -- for Varchar
+        WHERE  column1 = '&var_name';
+        
         
 -- 4: Single-Row Functions (that can be applied to SELECT, WHERE, ORDER BY)
 
