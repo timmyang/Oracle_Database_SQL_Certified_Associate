@@ -421,7 +421,7 @@ UNDEFINE employee_num;
 
 
 -- Defining a variable using the ACCEPT command
-ACCEPT dept_id PROMPT 'pelase enter dept_id'     -- must be executed together
+ACCEPT dept_id PROMPT 'please enter dept_id'     -- must be executed together
 SELECT * 
 FROM employees
 WHERE department_id = &dept_id;

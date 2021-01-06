@@ -146,6 +146,24 @@ UNION/UNION ALL/INTERSECT/MINUS
         -- for Varchar
         WHERE  column1 = '&var_name';
         
+    --5 DEFEINE and UNDEFINE command
+        DEFINE   column_name = value1  -- only valid for this session
+        
+        WHERE    column1 = &colunm_name;
+        
+        UNDEFINE column_name;
+        
+        -- ACCEPT command
+        ACCEPT   column_name 'message here'
+        [ACCEPT] column_name2 'message here2'
+        
+        WHERE    column1 = &column_name;
+        
+        -- using && to define, assign and store a value at the same time
+        SELECT   column1, column2, &&column3
+        FROM     Table1
+        ORDER BY &column3;          -- read the same value as &&column3 above
+        
         
 -- 4: Single-Row Functions (that can be applied to SELECT, WHERE, ORDER BY)
 
