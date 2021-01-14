@@ -1,7 +1,7 @@
 
 -- Keywords:
     --1 Statement
-        SELECT 
+        SELECT, INSERT INTO, UPDATE, DELETE -- DML
     --2 Clause
         WHERE, ORDER BY, FETCH, HAVING, TOP, GROUP BY
 
@@ -332,8 +332,85 @@ UNION/UNION ALL/INTERSECT/MINUS
     
 -- 9: Using the Set Operators
 
+    SELECT   column1, column2, column3, column4
+    FROM     Table1
 
+    UNION/UNION ALL/INTERSECT/MINUS 
 
+    SELECT   columnA, columnB, to_char(NULL) alias1, 0 alias2
+    FROM     Table2
+    ORDER BY column1/index/alias
+
+    --1 UNION operator
+    /*
+    The number of columns being selected must be the same.
+    The data types must be the same.
+    The names of the columns need NOT to be identical.
+    UNION operators compare all of the columns being selected.
+    NULL values are not ignored during duplicate checking.
+    By default, the output is sorted in ascending order
+    */
+    
+    --2 UNION ALL operator
+    /*
+    Will not remove duplicates
+    Will not be ordered
+    */
+
+-- 10: Managing Tables using DML Statements
+
+        DESC Table1
+        
+    --1 INSERT INTO
+        INSERT INTO Table1 [(column1, column2, column3,  column4, [column5])]
+        VALUES              ( value1,  value2, 'value3', &value4,    [NULL]);
+        
+        COMMIT;
+        
+        --
+        INSERT INTO Table1 (column1, column2, column3)
+        SELECT              column1, column2, column3
+        FROM        Table2
+        
+        COMMIT;
+        
+            -- Errors:
+                -- 1. cannot insert a new record with a Primary Key (PK) value that already exists
+                -- 2. cannot insert a new record with a Foreign Key (FK) value that does not exist in its table as a Primary Key
+                -- 3. cannot insert a new record into a column that does not match with its data type
+                -- 4. cannot insert a new record that has a length longer than predefined values
+
+    --2 UPDATE 
+        UPDATE  Table1
+        SET     column2 = value2,       column3 = value3
+        [WHERE   pk_column1 = value1];
+        
+        COMMIT;
+        
+        --
+        UPDATE  Table1
+        SET    (column2, column3) = (SELECT  column2, column3
+                                     FROM    Table1
+                                     WHERE   pk_column1 = value3)
+        [WHERE   pk_column1 = value1];
+        
+        COMMIT;
+        
+    --3 DELETE
+        DELETE [FROM] table1
+        [WHERE         column1 = value1];
+        
+        COMMIT;
+        
+        --
+        DELETE [FROM] table1
+        WHERE         column1 = (SELECT column1
+                                  FROM   table1
+                                  WHERE  column1 = value1)
+        
+            -- Erros:
+                -- 1. You cannot delete a Primary Key (parent) record that is used as a Foreign Key (child) to another table
+        
 -- 99: Questions
     --3 Restricting and Sorting Data
         -- LIKE operator
