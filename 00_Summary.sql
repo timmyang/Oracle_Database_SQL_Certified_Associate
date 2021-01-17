@@ -62,6 +62,8 @@ ORDER BY   column1/alias/index/expression [ASC, DESC, NULLS FIRST], column2
 
 UNION/UNION ALL/INTERSECT/MINUS
 
+SELECT ...
+
 -- 2: Retrieving Data using the SQL SELECT Statement
 
     SELECT   *
