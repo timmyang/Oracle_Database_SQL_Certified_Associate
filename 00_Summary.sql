@@ -1,9 +1,10 @@
 
 -- Keywords:
     --1 Statement
-        SELECT, INSERT INTO, UPDATE, DELETE -- DML
+        SELECT, INSERT INTO, UPDATE, DELETE, MERGE -- DML
     --2 Clause
-        WHERE, ORDER BY, FETCH, HAVING, TOP, GROUP BY
+        WHERE, ORDER BY, FETCH, HAVING, TOP, GROUP BY,
+        FOR UPDATE
 
 
 -- Operator:
@@ -410,6 +411,29 @@ UNION/UNION ALL/INTERSECT/MINUS
         
             -- Erros:
                 -- 1. You cannot delete a Primary Key (parent) record that is used as a Foreign Key (child) to another table
+    
+    --4 MERGE
+        MERGE INTO table1 alias1
+            USING (table|view|sub_query) alias2
+            ON (alias1.column1 = alias2.column1)
+            WHEN MATCHED THEN
+                UPDATE
+                SET alias1.column2 = alias2.column2,
+                    alias1.column3 = alias2.column3
+            WHEN NOT MATCHED THEN
+                INSERT
+                VALUES (alias2.column1, alias2.column2, alias2,column3);
+    
+    --5 Database Transactions
+        COMMIT
+        SAVEPOINT a
+        ROLLBACK [TO SAVEPOINT a]
+        
+    --6 Controlling Transactions
+        FOR UPDATE
+        FOR UPDATE NOWAIT
+        FOR UPDATE WAIT num
+        
         
 -- 99: Questions
     --3 Restricting and Sorting Data

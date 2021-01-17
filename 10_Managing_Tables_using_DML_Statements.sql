@@ -2,10 +2,10 @@
 /*
 Managing Tables using DML Statements
 - Perform INSERT, UPDATE and DELTE operations
+- Performing Multi-Table Inserts
+- Performing MERGE statements
 - Managing Database Transactions
-- Controlling transactions
-- Performing multi table Inserts
-- Performing Merge statements
+- Controlling Transactions
 */
 
 
@@ -26,7 +26,7 @@ Managing Tables using DML Statements
         TRUNCATE
         COMMENT
         
-    -- Data Control Language (DC):
+    -- Data Control Language (DCL):
         GRANT
         REVOKE
         
@@ -234,7 +234,7 @@ DELETE FROM Departments
 WHERE       department_id = 90;
 
 
---5 TRUNCATE statement
+--5 TRUNCATE statement (DDL)
 TRUNCATE TABLE Dept_copy;   -- you cannot rollback
 
 SELECT *
@@ -250,3 +250,298 @@ Difference between DELETE and TRUNCATE:
 - can have WHERE clause             no WHERE clause
 - delete does not delete space      deletes space
 */
+
+--6 MERGE Statement
+
+/*
+MERGE INTO table1 alias1
+    USING (table|view|sub_query) alias2
+    ON (join conidtion)
+    WHEN MATCHED THEN
+        UPDATE
+        SET column1 = value1,
+            column2 = value2
+    WHEN NOT MATCHED THEN
+        INSERT
+        VALUES (column_values);
+*/
+
+CREATE TABLE table_a (
+                      id number,
+                      name varchar2(100)
+                      );
+
+INSERT INTO table_a values (1, 'khaled');
+INSERT INTO table_a values (2, 'ali');
+INSERT INTO table_a values (3, 'ahmed');
+COMMIT;
+
+SELECT *
+FROM   Table_a;
+
+CREATE TABLE table_b (
+                      id number,
+                      name varchar2(100)
+                      );
+                      
+INSERT INTO table_b values (1, 'xxxxx');
+INSERT INTO table_b values (2, 'xxxxx');
+COMMIT;
+
+SELECT *
+FROM   Table_b;
+
+MERGE INTO             table_b b
+    USING              (SELECT *
+                        FROM   table_a) a
+    ON                 (b.id = a.id)
+    WHEN MATCHED THEN
+        UPDATE
+        SET            b.name = a.name
+    WHEN NOT MATCHED THEN
+        INSERT
+        VALUES         (a.id, a.name);
+        
+
+--7 Database Transcations
+
+/*
+A Database transaction consists of one of the following:
+
+- DML statements that constitute one consistent change to the data
+- One DDL statement
+- One Data Control Language (DCL) statement
+*/
+
+
+-- Start and End
+
+/*
+- Begin when the first DML SQL statement is executed
+- End with one of the following events:
+    - a COMMIT or ROLLBACK statement is issued
+    - a DDL or DCL statement executes (automatic commit)
+    - The user exists SQL Developer of SQL* Plus
+    - The system crashes
+*/
+
+
+-- Advantage of COMMIT and ROLLBACK Statements
+
+/*
+With COMMIT and ROLLBACK statements, you can:
+
+- Ensure data consistency
+- Preview data changes before making changes permanent
+- Group logically related operations
+*/
+
+
+-- Explicit Transaction Control Statements
+
+/*
+You can control the logic of transactions by using the 
+    COMMIT, SAVEPOINT, ROLLBACK statements
+*/
+
+
+-- Implicit Transaction Processing
+
+/*
+An automatic COMMIT occurs in the following circumstances:
+
+- a DDL statement issued
+- a DCL statement issued
+- Normal exit from SQL Developer or SQL*Plus,
+    without explicitly issuing COMMIT or ROLLBACK statements
+
+An automatic ROLLBACK occurs 
+    when there is an abnormal termination of SQL Developer or SQL*Plus or s system failure
+*/
+
+
+-- State of the Data before COMMIT or ROLLBACK
+
+/*
+- The previous state of the data can be recovered
+- The current session can review the results of the DML operations by using the SELECT statement
+- Other sessions cannot view the results of the DML statements issued by the current session
+- The affected rows are locked; other session cannot change the data in the affected rows
+*/
+
+    -- Case 1
+    -- Doing some DML statements, then doing COMMIT
+    SELECT *
+    FROM   Employees
+    WHERE  employee_id IN (200, 201);
+    
+    SELECT *
+    FROM   Departments
+    WHERE  Department_id = 1;
+    
+    -- DML1
+    UPDATE Employees
+    SET    salary = salary + 100
+    WHERE  Employee_id = 200;
+    
+    -- DML2
+    UPDATE Employees
+    SET    salary = salary + 50
+    WHERE  employee_id = 201;
+    
+    -- DML3
+    INSERT INTO Departments (department_id, department_name,    manager_id, location_id)
+    VALUES                  (            1, 'ADMINISTRATION 2',        200,        1700);
+    
+    -- All of the above DML statements will be committed (DML 1, 2, 3)
+    COMMIT;
+    
+    -- Case 2
+    -- Doing some DML statements, then doing ROLLBACK
+    -- DML1
+    DELETE FROM Departments
+    WHERE       department_id = 1;
+    
+    -- DML2
+    DELETE FROM Employees
+    WHERE       employee_id = 1;
+    
+    SELECT *
+    FROM   Departments
+    WHERE  department_id = 1;
+    
+    SELECT *
+    FROM   Employees
+    WHERE  employee_id = 1;
+    
+    -- Both data will be restored (DML1, 2)
+    ROLLBACK;
+    
+    -- Case 3
+    -- Statement-level ROLLBACK
+    SELECT *
+    FROM   Employees
+    WHERE  employee_id IN (106, 107);
+    
+    -- DML1
+    DELETE FROM Employees
+    WHERE       employee_id = 106;
+    
+    -- DML2
+    -- error (Oracle rollbacks this statement itself)
+    DELETE FROM Departments;
+    
+    -- DML3
+    DELETE FROM Employees
+    WHERE       employee_id = 107;
+    
+    -- It will roll back the first and third DML statements (DML1, 3) 
+    ROLLBACK;
+    
+    -- Case 4
+    -- Doing some DML statements, then doing one DDL/DCL statement
+    -- This will make an automatic COMMIT
+    -- DML1
+    INSERT INTO Departments (department_id, department_name, manager_id, location_id)
+    VALUES                  (         1000,         'dept1',        200,        1700);
+    
+    -- DML2
+    INSERT INTO Departments (department_id, department_name, manager_id, location_id)
+    VALUES                  (         1001,         'dept2',        200,        1700);
+    
+    -- DDL1
+    -- an autocommit occurred for DML1, 2
+    CREATE TABLE Test_table (
+                             emp_id NUMBER,
+                             name VARCHAR2(100)
+                             );
+    
+    -- The DML1, 2 will not be rolled back here
+    ROLLBACK;
+    
+    SELECT *
+    FROM   Departments
+    WHERE  department_id IN (1000, 1001);
+    
+
+--8 SAVEPOINT
+-- If you make multiple DML statements, and ROLLBACK without any SAVEPOINTs
+-- it will ROLLBACK al of the previous DML statements
+SELECT *
+FROM   Employees
+WHERE  employee_id = 108;
+
+UPDATE Employees
+SET    salary = salary + 100
+WHERE  employee_id = 108;
+
+SAVEPOINT a;
+
+--
+SELECT *
+FROM   Employees
+WHERE  employee_id = 108;
+
+UPDATE Employees
+SET    salary = salary + 20
+WHERE  employee_id = 108;
+
+SELECT *
+FROM   Employees
+WHERE  employee_id = 108;
+
+ROLLBACK TO SAVEPOINT a;
+
+--
+SELECT *
+FROM   Employees
+WHERE  employee_id = 108;
+
+COMMIT;
+
+SELECT *
+FROM   Employees
+WHERE  employee_id = 108;
+
+
+--9 ROW Lock (data consistency)
+
+/*
+If you change the data value with DML, but does not COMMIT
+    - only the first session will reflect the change, not other sessions
+    - other sessions cannot modify the data value in the same row, until the first session completes the COMMIT
+*/
+
+SELECT *
+FROM   Employees
+WHERE  employee_id = 109;
+
+UPDATE Employees
+SET    salary = salary + 20
+WHERE  employee_id = 109;
+
+SELECT *
+FROM   Employees
+WHERE  employee_id = 109;
+
+
+--10 FOR UPDATE clause
+-- When you do this, no other users or other sessions can make a change on the same row, until the user COMMITs (they will wait)
+SELECT *
+FROM   Employees
+WHERE  department_id = 10
+FOR UPDATE;
+
+COMMIT;
+
+-- When the other session is making a change and did not commit, the code below prints the error source without having to wait
+SELECT *
+FROM   Employees
+WHERE  department_id = 10
+FOR UPDATE NOWAIT;
+
+-- same as above, but waits 10 seconds
+SELECT *
+FROM   Employees
+WHERE  department_id = 10
+FOR UPDATE WAIT 10;
