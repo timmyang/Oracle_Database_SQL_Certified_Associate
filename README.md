@@ -70,11 +70,11 @@ Qualified candidates have knowledge of general computing concepts, knowledge of 
 
 ## 10. Managing Tables using DML statements
 
+- Perform INSERT, UPDATE and DELETE operations
+- Performing Multi-Table INSERTS
+- Performing MERGE statements
 - Managing Database Transactions
-- Controlling transactions
-- Perform Insert, Update and Delete operations
-- Performing multi table Inserts
-- Performing Merge statements
+- Controlling Transactions
 
 ## 11. Managing Indexes Synonyms and Sequences
 
