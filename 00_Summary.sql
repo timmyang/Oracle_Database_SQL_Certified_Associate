@@ -50,7 +50,8 @@ SELECT count(*)/count(1)
 
 -- general SELECT statement
 SELECT     [DISTINCT] *, column1 [||] column2 [AS] alias
-FROM       Table1                                        -------------------------- NOT ---------------------------
+FROM       Table1 [LEFT/RIGHT/FULL OUTER JOIN Table2] 
+                [ON table1.column1 = table2.column2]     -------------------------- NOT ---------------------------
 WHERE      column1 [=, >, <, != (&var_name, &&var_name), BETWEEN ... AND ..., IN(), LIKE '_%' (ESCAPE '/'), IS NULL] 
            (subquery) SELECT(...)
            [AND, OR]
