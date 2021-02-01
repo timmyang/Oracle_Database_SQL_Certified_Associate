@@ -441,7 +441,7 @@ SELECT ...
 -- 99: Questions
     --3 Restricting and Sorting Data
         -- LIKE operator
-            -- Does the value in column1 that starts with s 
-            -- will be included in the following result?
+            -- Will the value in column1 that starts with "s" 
+            -- be included in the following result?
             WHERE  column1 LIKE '%s%';  -- includes s
         
