@@ -50,7 +50,8 @@ SELECT count(*)/count(1)
 
 -- general SELECT statement
 SELECT     [DISTINCT] *, column1 [||] column2 [AS] alias
-FROM       Table1                                        -------------------------- NOT ---------------------------
+FROM       Table1 [LEFT/RIGHT/FULL OUTER JOIN Table2] 
+                [ON table1.column1 = table2.column2]     -------------------------- NOT ---------------------------
 WHERE      column1 [=, >, <, != (&var_name, &&var_name), BETWEEN ... AND ..., IN(), LIKE '_%' (ESCAPE '/'), IS NULL] 
            (subquery) SELECT(...)
            [AND, OR]
@@ -61,6 +62,8 @@ ORDER BY   column1/alias/index/expression [ASC, DESC, NULLS FIRST], column2
                          [FETCH NEXT]
 
 UNION/UNION ALL/INTERSECT/MINUS
+
+SELECT ...
 
 -- 2: Retrieving Data using the SQL SELECT Statement
 
@@ -469,7 +472,7 @@ UNION/UNION ALL/INTERSECT/MINUS
 -- 99: Questions
     --3 Restricting and Sorting Data
         -- LIKE operator
-            -- Does the value in column1 that starts with s 
-            -- will be included in the following result?
+            -- Will the value in column1 that starts with "s" 
+            -- be included in the following result?
             WHERE  column1 LIKE '%s%';  -- includes s
         
