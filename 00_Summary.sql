@@ -434,7 +434,38 @@ UNION/UNION ALL/INTERSECT/MINUS
         FOR UPDATE NOWAIT
         FOR UPDATE WAIT num
         
+-- 11: Managing Indexes, Synonyms and Sequences
+
+    --1 Creating an Index
+        CREATE [UNIQUE/BITMAP] INDEX name_for_the_index 
+        ON                           table1 (column1);
+      
+        DROP INDEX index_name;
         
+    --2 Creating a Synonym
+        CREATE [PUBLIC] SYNONYM name_for_the_synonym
+        FOR                     object_name(table1);
+        
+        SELECT   *
+        FROM     name_for_the_synonym;
+        
+        DROP SYNONYM            name_for_the_synonym;
+        
+    --3 Creating a Sequence
+        CREATE SEQUENCE name_for_the_sequence;
+        [START WITH     integer1]
+        [INCREMENT BY   integer2]
+        [MAXVALUE       integer3/NOMAXVALUE]
+        [CACHE          integer4/NOCACHE]       
+        [CYCLE/NOCYCLE]
+        [ORDER/NOORDER]
+        
+        INSERT INTO table1 (column1, column2)
+        VALUES             (name_for_the_sequence.NEXTVAL/CURRVAL, value1);
+        
+        DROP SEQUENCE   name_for_the_sequence;
+        
+
 -- 99: Questions
     --3 Restricting and Sorting Data
         -- LIKE operator
