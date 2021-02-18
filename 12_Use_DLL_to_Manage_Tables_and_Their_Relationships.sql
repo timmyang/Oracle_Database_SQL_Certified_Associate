@@ -10,7 +10,6 @@ Use DDL to manage tables and their relationships
 - Truncating tables
 - Creating and using Temporary Tables
 - Creating and using external tables
-
 */
 
 
@@ -224,4 +223,102 @@ You must specify:
       WHERE    OWNER = 'HR';    
       
 
--- 4: Creating Tables with constraints (column level syntax)
+-- 4: Creating Tables (with constraints, column level syntax)
+      
+/*
+Including Constraints:
+  - Oracle server uses contraints to prevent invalid data entry into tables
+
+You can use constraints to do the following:
+  - Enforce rules on the data in a table whenever a row is inserted, updated, or deleted from that table.
+    The constraint must be satistifed for the operation to succeed
+  - Prevent the dropping of a table if there are dependencies from other tables
+  - Provide rules for Oracle tools, such as Oracle Developer
+
+Data Integrity Constraints:
+  - NOT NULL
+      specifies that the column cannot contain a null value
+      it can only be defined at the column level
+      Primary Key enforces the NOT NULL constraint (a PK cannot be null)
+  - UNIQUE
+      specifies a column or combination of columns whose values must be unique for all rows in the table
+        Caution:
+          record 1 --> column1 = (null), column2 = (null)
+          record 2 --> column1 = (null), column2 = (null)  This is allowed. (null)+(null) are not unique.
+            record 1 --> column1 = (1), column2 = (null)
+            record 2 --> column1 = (1), column2 = (null) This is NOT allowed. (1)+(null) is one unique value.
+  - PRIMARY KEY
+      uniquely identifies each row of the table
+      Only one PRIAMRY KEY can be created for each table
+        Note:
+          when you create a PRIMARY KEY or an UNIQUE KEY, Oracle automatically creates a unique index
+  - FOREIGN KEY + (REFERENCES)
+      establishes and enforces a referential integrity between the column and a column of the referenced table
+      such that values in one table match values in another table.
+      Foreign Key value must match an exisng value(PK) in the parent table or be NULL.
+  - CHECK
+      specifies a condition that must be true
+      
+Constraint Guidelines:
+  - You can name a constraint or the Oracle server generates a name by using the SYS_Cn format
+  - Create a constraint at either of the following items:
+      At the same time as the creation of the table
+      After the creatino of the table
+  - Define a constraint at the column or table level
+  - View a constraint in the data dictionary
+  
+  - Constraints are easy to reference if you give them a meaningful name
+  - Functionally, a table-level constraint is the same as a column-level constraint
+*/
+
+
+-- 5: Creating Tables (column-level constraints)
+
+  -- column-level constraints are less flexible than table-level constraints (b/c it can only create a primary key with one column), 
+  -- although they are functionally the same.
+  -- Column-level constrainsts are not the best practices.
+  
+     CREATE TABLE Xx_emp_col_const1(
+                                   emp_id  NUMBER        CONSTRAINT xx_emp_col_const_pk  PRIMARY KEY,
+                                   ename   VARCHAR2(100) CONSTRAINT xx_emp_col_const_uk1 UNIQUE,
+                                   salary  NUMBER NOT NULL,
+                                   gender  CHAR(1)       CONSTRAINT xx_emp_col_const_chq CHECK (gender IN ('M', 'F')),
+                                   dept_id NUMBER        CONSTRAINT xx_emp_col_const_fk1 REFERENCES Departments (department_id)
+                                   );
+    
+     SELECT   *
+     FROM     User_constraints
+     WHERE    table_name = 'Xx_emp_col_const';
+    
+     --Let's try inserting data
+       INSERT INTO Xx_emp_col_const (emp_id, ename,    salary, gender, dept_id)
+       VALUES                       (     1, 'khaled',    500,    'D',    NULL);  -- CHECK Constraint is violated from gender
+
+       INSERT INTO Xx_emp_col_const (emp_id, ename,    salary, gender, dept_id)
+       VALUES                       (     1, 'khaled',    500,   NULL,    NULL);  -- this one works! (you can have NULL for CHECK and FK Constriants)
+    
+       INSERT INTO Xx_emp_col_const (emp_id, ename,    salary, gender, dept_id)
+       VALUES                       (     2, 'khaled',    500,   NULL,    NULL);  -- UNIQUE Constraint is violated
+    
+
+-- 5: Creating Tables (table-level constraints)
+
+  -- creating table-level constraints is the best practice
+  -- you can create more than one Primary Key "column" in a table (composite PK)
+  -- it forces you to name the constraint
+  
+     CREATE TABLE Xx_emp_col_const2 (
+                                    emp_id1 NUMBER,
+                                    emp_id2 NUMBER,
+                                    ename   VARCHAR2(100),
+                                    salary  NUMBER         NOT NULL,    -- you can not make the NOT NULL constraint at the table level
+                                    gender  CHAR(1),
+                                    dept_id NUMBER,
+                                    
+                                    CONSTRAINT Xx_emp_col_const1_pk  PRIMARY KEY (emp_id1, emp_id2),    -- composite PK
+                                    CONSTRAINT Xx_emp_col_const1_uk1 UNIQUE (ename),
+                                    CONSTRAINT Xx_emp_col_const1_ch1 CHECK (gender IN ('M', 'F')),
+                                    CONSTRAINT Xx_emp_col_const1_fk1 FOREIGN KEY (dept_id) REFERENCES Departments (department_id)
+                                    );
+    
+    

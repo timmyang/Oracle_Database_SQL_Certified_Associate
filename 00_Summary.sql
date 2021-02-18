@@ -1,10 +1,16 @@
 
 -- Keywords:
-    --1 Statement
-        SELECT, INSERT INTO, UPDATE, DELETE, MERGE -- DML
+    --1 Data Manipulation Language (DML), Statement
+        SELECT, INSERT, UPDATE, DELETE, MERGE
     --2 Clause
         WHERE, ORDER BY, FETCH, HAVING, TOP, GROUP BY,
         FOR UPDATE
+    --3 Data Definition Language (DDL), Statement
+        CREATE, ALTER, DROP, RENAME, TRUNCATE
+    --4 Data Control Language (DCL)
+        GRANT, REVOKE
+    --5 Transaction Control Language (TCL)
+        COMMIT, ROLLBACK, SAVEPOINT
 
 
 -- Operator:
@@ -468,6 +474,20 @@ SELECT ...
         
         DROP SEQUENCE   name_for_the_sequence;
         
+-- 12: Use DDL to Manage Tables and Their Relationships
+
+    --1 Creating Tables
+        CREATE TABLE table1 (
+                            column1 CHAR[(max_size)],
+                            column2 VARCHAR2(max_size),
+                            column3 NUMBER[(p.recision, s.cale)],
+                            column4 DATE       [DEFAULT SYSDATE],
+                            column5 CLOB,
+                            column6 BLOB,
+                            column7 TIMESTAMP
+                            );
+    
+
 
 -- 99: Questions
     --3 Restricting and Sorting Data
