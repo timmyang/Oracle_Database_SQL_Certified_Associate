@@ -650,5 +650,5 @@ Guidelines:
             Xx_dept_table
                     TO Xx_dept_t;
                     
-      SELECT * FROM Xx_dept_table;   -- Error: this name no longer exist
-      SELECT * FROM Xx_dept_t;
+       SELECT * FROM Xx_dept_table;   -- Error: this name no longer exist
+       SELECT * FROM Xx_dept_t;
