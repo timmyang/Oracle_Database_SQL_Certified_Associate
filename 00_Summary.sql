@@ -1,12 +1,12 @@
 
 -- Keywords:
     --1 Data Manipulation Language (DML), Statement
-        SELECT, INSERT, UPDATE, DELETE, MERGE
+        SELECT, INSERT, UPDATE, DELETE(FROM), MERGE
     --2 Clause
         WHERE, ORDER BY, FETCH, HAVING, TOP, GROUP BY,
         FOR UPDATE
     --3 Data Definition Language (DDL), Statement
-        CREATE, ALTER, DROP, RENAME, TRUNCATE
+        CREATE(TABLE), ALTER(TABLE), DROP(COLUMN), RENAME, TRUNCATE
     --4 Data Control Language (DCL)
         GRANT, REVOKE
     --5 Transaction Control Language (TCL)
@@ -477,15 +477,107 @@ SELECT ...
 -- 12: Use DDL to Manage Tables and Their Relationships
 
     --1 Creating Tables
-        CREATE TABLE table1 (
-                            column1 CHAR[(max_size)],
-                            column2 VARCHAR2(max_size),
-                            column3 NUMBER[(p.recision, s.cale)],
-                            column4 DATE       [DEFAULT SYSDATE],
-                            column5 CLOB,
-                            column6 BLOB,
-                            column7 TIMESTAMP
-                            );
+        CREATE TABLE 
+            table1 (
+                      column1 CHAR[(max_size)]
+                    , column2 VARCHAR2(max_size)
+                    , column3 NUMBER[(p.recision, s.cale)]
+                    , column4 DATE       [DEFAULT SYSDATE]
+                    , column5 CLOB
+                    , column6 BLOB
+                    , column7 TIMESTAMP
+                    );
+    
+    --2 Constraints (column-level) not recommended
+        CREATE TABLE 
+            table1 (
+                      column1 NUMBER     NOT NULL
+                    , column2 VARCHAR2() CONSTRAINT name_for_the_const UNIQUE
+                    , column3 NUMBER     CONSTRAINT name_for_the_const PRIMARY KEY
+                    , column4 NUMBER     CONSTRAINT name_for_the_const REFERENCES table2 (column10)
+                    , column5 CHAR       CONSTRAINT name_for_the_const CHECK (column5 IN ())
+                    );
+                             
+    --3 Constraints (table-level) recommended (with ON DELETE CASECADE/SET NULL)
+        CREATE TABLE 
+            table1 (
+                     column1 NUMBER [PRIMARY KEY]
+                   , column2 NUMBER [PRIMARY KEY]
+                   , column3 VARCHAR2()
+                   , column4 NUMBER      NOT NULL    -- cannot make NOT NULL constraint at the table level
+                   , column5 CHAR()
+                   , column6 NUMBER
+                            
+                  [, CONSTRAINT name_for_the_const 
+                            PRIMARY KEY (column1, column2)]
+                   , CONSTRAINT name_for_the_const 
+                            UNIQUE (column3)
+                   , CONSTRAINT name_for_the_const 
+                            CHECK (column5 IN ())
+                   , CONSTRAINT name_for_the_const 
+                            FOREIGN KEY (column6) REFERENCES Table2 (column10)    -- notice the syntax now includes FOREGIN KEY
+                                    [ON DELETE CASCADE/SET NULL]
+                   );
+    
+    --4 Creating Tables AS a subquery
+        CREATE TABLE
+            table1 [(col_name1, col_name2, colname3, colname4)]
+                    AS SELECT 
+                            column1
+                          , column2
+                          , column3
+                          , column4
+                       FROM
+                          table1
+                       WHERE
+                          column4 = number1;
+    
+    --5 ALTER TABLE statements
+        -- ADD
+           ALTER TABLE 
+                table1
+                    ADD ( new_column1 NUMBER [DEFAULT number1  [NOT NULL]]
+                        , new_column2 VARCHAR2(num1)    -- this column will be automatically filled with (null)s
+                        );
+        -- MODIFY
+           ALTER TABLE
+                table1
+                    MODIFY (  column1 NOT NULL
+                            , column2 VARCHAR2(num2)       
+                           );
+        -- DROP COLUMN
+           ALTER TABLE
+                table1
+                    DROP COLUMN column1;                -- () is NOT needed, b/c only one column can be dropped at once. (column1, column2) is NOT allowed.
+        -- SET UNUSED
+           ALTER TABLE
+                table1
+                    SET UNUSED(column1)
+                            [ONLINE];                   -- allows DML operation while making the column unused
+                            
+           ALTER TABLE
+                table1
+                    DROP UNUSED COLUMNS;                -- removes all UNUSED columns physically
+        -- READ ONLY/READ WRITE
+           ALTER TABLE
+                table1                                  -- ONLY: prevents DML, DDL(except when it does NOT change data e.g. ADD a column)
+                    READ ONLY/WRITE;                    -- WRITE: allows DML, DLL
+        -- RENAME [COLUMN]
+           ALTER TABLE
+                table1
+                    RENAME COLUMN column1
+                            TO new_col_name;            -- renaming a column
+            
+            RENAME
+                table1
+                    TO new_table_name;                  -- renaming an object(table)
+
+    --6 Dropping a Table
+        DROP TABLE table1 [PURGE];                            -- skips the recycle bin.
+        
+        SELECT     *
+        FROM       USER_RECYCLEBIN
+        WHERE      original_name = 'table1';            -- Querying the table in the recycle bin
     
 
 

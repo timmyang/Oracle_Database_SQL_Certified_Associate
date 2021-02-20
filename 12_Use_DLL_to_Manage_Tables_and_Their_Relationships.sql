@@ -6,9 +6,10 @@ Use DDL to manage tables and their relationships
 - Creating tables
 - Managing Constraints
 
-- Dropping columns and setting column UNUSED
-- Truncating tables
-- Creating and using Temporary Tables
+- Dropping columns and setting column UNUSED    
+
+- Truncating tables                             [ON DELETE CASCADE/SET NULL?]
+- Creating and using Temporary Tables           [subquery?]
 - Creating and using external tables
 */
 
@@ -240,6 +241,7 @@ Data Integrity Constraints:
       specifies that the column cannot contain a null value
       it can only be defined at the column level
       Primary Key enforces the NOT NULL constraint (a PK cannot be null)
+      
   - UNIQUE
       specifies a column or combination of columns whose values must be unique for all rows in the table
         Caution:
@@ -247,15 +249,18 @@ Data Integrity Constraints:
           record 2 --> column1 = (null), column2 = (null)  This is allowed. (null)+(null) are not unique.
             record 1 --> column1 = (1), column2 = (null)
             record 2 --> column1 = (1), column2 = (null) This is NOT allowed. (1)+(null) is one unique value.
+  
   - PRIMARY KEY
       uniquely identifies each row of the table
       Only one PRIAMRY KEY can be created for each table
         Note:
           when you create a PRIMARY KEY or an UNIQUE KEY, Oracle automatically creates a unique index
+  
   - FOREIGN KEY + (REFERENCES)
       establishes and enforces a referential integrity between the column and a column of the referenced table
       such that values in one table match values in another table.
       Foreign Key value must match an exisng value(PK) in the parent table or be NULL.
+  
   - CHECK
       specifies a condition that must be true
       
@@ -301,7 +306,7 @@ Constraint Guidelines:
        VALUES                       (     2, 'khaled',    500,   NULL,    NULL);  -- UNIQUE Constraint is violated
     
 
--- 5: Creating Tables (table-level constraints)
+-- 6: Creating Tables (table-level constraints)
 
   -- creating table-level constraints is the best practice
   -- you can create more than one Primary Key "column" in a table (composite PK)
@@ -315,10 +320,335 @@ Constraint Guidelines:
                                     gender  CHAR(1),
                                     dept_id NUMBER,
                                     
-                                    CONSTRAINT Xx_emp_col_const1_pk  PRIMARY KEY (emp_id1, emp_id2),    -- composite PK
-                                    CONSTRAINT Xx_emp_col_const1_uk1 UNIQUE (ename),
-                                    CONSTRAINT Xx_emp_col_const1_ch1 CHECK (gender IN ('M', 'F')),
-                                    CONSTRAINT Xx_emp_col_const1_fk1 FOREIGN KEY (dept_id) REFERENCES Departments (department_id)
+                                    CONSTRAINT Xx_emp_col_const1_pk  
+                                            PRIMARY KEY (emp_id1, emp_id2),    -- composite PK
+                                    CONSTRAINT Xx_emp_col_const1_uk1 
+                                            UNIQUE (ename),
+                                    CONSTRAINT Xx_emp_col_const1_ch1 
+                                            CHECK (gender IN ('M', 'F')),
+                                    CONSTRAINT Xx_emp_col_const1_fk1 
+                                            FOREIGN KEY (dept_id) REFERENCES Departments (department_id)
                                     );
     
+
+-- 7: ON DELETE cascade 
+      -- deletes the records(FKs) of a child table that correspond to "deleted" records(PKs) of its parent table
+
+      DELETE FROM Departments;   -- Error: Integrity constraint (HR.EMP_DEMP_FK) violated. child record found
+      
+      CREATE TABLE 
+            Dept1 (
+                    deptno NUMBER
+                  , dname  VARCHAR2(100)
+                  
+                  , CONSTRAINT dept1_pk 
+                            PRIMARY KEY (deptno)
+                  );
+                         
+      INSERT INTO Dept1 VALUES (1, 'HR DEPT');
+      INSERT INTO Dept1 VALUES (2, 'PO DEPT');
+      COMMIT;
+      
+      SELECT   *
+      FROM     Dept1;
+      
+      --
+      CREATE TABLE 
+            Emp1 (
+                   empid NUMBER PRIMARY KEY
+                 , ename VARCHAR2(100)
+                 , deptno NUMBER
+                        
+                 , CONSTRAINT emp1_pk 
+                        FOREIGN KEY (deptno) REFERENCES Dept1(deptno) 
+                                ON DELETE CASCADE
+                 );
+      
+      INSERT INTO Emp1 VALUES (1, 'khaled', '1');
+      INSERT INTO Emp1 VALUES (2, 'ali', '1');
+      INSERT INTO Emp1 VALUES (3, 'ahmed', '1');
+      INSERT INTO Emp1 VALUES (4, 'rania', '2');
+      INSERT INTO Emp1 VALUES (5, 'lara', '2');
+      COMMIT;
+      
+      SELECT   *
+      FROM     Emp1;
+      
+      SELECT   *
+      FROM     Dept1
+      WHERE    deptno = 1;
+      
+      -- when you delete the master record (Dept1), 
+      -- Oracle will also delete relevent records from the detail recrods from other tables (Emp1)
+      DELETE FROM Dept1
+      WHERE       deptno = 1;
+      
+      SELECT   *
+      FROM     Emp1;
+
+
+-- 8: ON DELETE SET NULL
+      -- does NOT delete the child's record, but makes it NULL instead
+      ... 
+      , CONSTRAINT emp1_pk 
+                FOREIGN KEY (deptno) REFERENCES Dept1(deptno) 
+                        ON DELETE SET NULL
+      
+
+-- 9: Creating a table AS subquery
+
+/*
+- Create a table and insert rows by combining the CREATE TABLE statement and the AS subquery option
+- Match the number of specified oclumns to the number of subquery columns
+- Define columns with column names and default values
+- When you use expressions, you should use column alias
+*/
+      CREATE TABLE 
+            E_emp (emp_id, fname, lname, sal DEFAULT 0, dept_id)
+                  AS SELECT 
+                          employee_id
+                        , first_name
+                        , last_name
+                        , salary
+                        , department_id
+                     FROM
+                        Employees
+                     WHERE
+                        department_id = 90;
+                        
+      DESC E_emp;    -- no Constraints are copied, except for NOT NULL for the last_name
+                     -- PK(employee_id)'s constraint NOT NULL is not copied, because it is PK
+      SELECT   *
+      FROM     E_emp;
+
+
+/*
+Use the ALTER TABLE statement to:
+
+- Add a new column
+- Modify an existing column definition
+- Define a default value for the new column
+- Drop a column
+- Rename a column
+- Change table to read-only status
+
+Also:
+
+- Add a new constraint to the table
+- Disable a constraint in the table
+- Drop a constraint from the table
+*/
+
+
+-- 10: ALTER TABLE (ADD columns)
+
+/*
+Guidelines for Adding a Column:
+
+- You cannot specify where the column is to appear
+- The new column becomes the last column
+
+  Note:
+    - If a table already contains rows when a column is added, 
+      the new column is initially null or takes the default value for all the rows.
+    - You can add a mandatory NOT NULL column to a table that contains data in the other columns,
+      only if you specify a default value.
+    - You can add a NOT NULL column to an empty table without the default value.
+*/
+       DESC E_emp;
+       SELECT * FROM E_emp;
+       
+       ALTER TABLE
+            E_emp 
+                ADD (gender CHAR(1));
+        
+       ALTER TABLE
+            E_emp
+                ADD (commission NUMBER
+                                    DEFAULT 0 NOT NULL);
+       
+       ALTER TABLE
+            E_emp
+                ADD (commission1 NUMBER
+                                    DEFAULT 0);    -- can make it to NULL
+       ALTER TABLE
+            E_emp
+                ADD (commission2 NUMBER
+                                    NOT NULL);     -- this will not work, b/c NOT NULL must have a default value
     
+       ALTER TABLE
+            E_emp
+                ADD ( create_date DATE
+                                    DEFAULT SYSDATE
+                    , created_by VARCHAR2(100)
+                                    DEFAULT USER
+                    );
+                    
+        SELECT * FROM E_emp;
+                    
+                    
+-- 11: ALTER TABLE (MODIFY columns)
+
+/*
+Modifying a Column
+- You can change a column's Date Type, Size, and Default value
+- A change to the default value affects only subsequent insertions to the table
+
+Guidelines:
+- You can decrease the width of a column if:
+    - The column contains only null values
+    - The table has no rwos
+    - The decrease in column width is not less than the existing values in that column
+*/
+       SELECT * FROM E_emp;
+       DESC E_emp;
+       
+       ALTER TABLE
+            E_emp
+                MODIFY (created_by VARCHAR2(200));
+                
+       ALTER TABLE
+            E_emp
+                MODIFY (created_by NOT NULL);
+                
+       UPDATE 
+            E_emp
+                SET gender = 'M';
+        
+       SELECT * FROM E_emp;
+
+
+-- 12: ALTER TABLE (DROP COLUMN)
+
+/*
+Guidelines:
+- The column may or may not contain data
+- Only one column can be dropped at a time
+- The table must have at least one column remaining in it, after it is altered
+- A primary key that is referenced by another column cannot be dropped, unless the cascade option is added
+- Dropping a column can take a while if the column has a large number of values
+  In this case, it may be better to set it to be unused and drop it when there are fewer users on the system to avoid extended locks
+*/
+       SELECT * FROM E_emp;
+       
+       ALTER TABLE
+            E_emp
+                DROP COLUMN created_by;         
+                
+       ALTER TABLE
+            E_emp
+                DROP COLUMN (gender, created_date);   -- Error: cannot drop two columns at the same time
+        
+
+-- 13: ALTER TABLE (SET UNUSED)
+
+/*
+- You can use the SET UNUSED option to mark one or more columns unused
+- You use the DROP UNUSED COLUMNS options to remove the columns that are marked as unused
+- You can specify the ONLINE keyword to indicate that 
+  DML operations on the table will be allowed while marking a column or columns unused
+*/
+
+       SELECT * FROM E_emp;
+       
+       ALTER TABLE
+            E_emp
+                SET UNUSED (salary);
+       
+       SELECT * FROM User_unused_col_tabs;
+       
+       UPDATE
+            E_emp
+                SET salary = 100;   -- Error: the salary column is gone(unused)
+            
+        
+       ALTER TABLE 
+            E_emp
+                SET UNUSED(first_name) 
+                    ONLINE;    -- allows DML operation while making the column unused. It could take time
+        
+       ALTER TABLE
+            E_emp
+                DROP UNUSED COLUMNS;
+
+
+-- 14: ALTER TABLE (read only / read write)
+
+/*
+Read-Only Tables
+
+You can use the ALTER TABLE syntax to:
+  - Put a table in read-only mode, which prevents DDL or DML changes during table maintenance
+  - Put the table back into read/write mode
+*/
+       SELECT * FROM E_emp;
+       
+       ALTER TABLE 
+            E_emp
+                READ ONLY;
+        
+       DELETE FROM
+            E_emp;      -- Not allowed
+        
+       ALTER TABLE
+            E_emp
+                ADD (created_by VARCHAR2(100));     -- this DDL is allowed, because it does not change data
+            
+       ALTER TABLE
+            E_emp
+                DROP (created_by);                  -- this DDL is NOT allowed, because it changes data
+                
+      ALTER TABLE
+            E_emp
+                READ WRITE;                         -- Now, the above DDL, and below DML, are allowed
+    
+      DELETE FROM E_emp;
+
+
+-- 15: Dropping a Table
+
+/*
+Dropping a Table:
+- Moves a table to the recycle bin
+- Removes the table and its data entirely, if the PURGE clause is specified
+- Invalidates dependent objects and removes object privileges on the table
+
+Guidelines:
+- All data is delted from the table
+- Any views and synonyms remain, but are invalid
+- Any pending transactions are committed
+- Only the creator of the table or a user with teh DROP ANY TABLE privilege can remove a table
+
+  Note: use the FLASHBACK TABLE statement to restore a dropped table from the recycle bin
+*/
+      SELECT * FROM E_emp;
+      
+      DROP TABLE E_emp;
+      
+      SELECT * FROM E_emp;    -- Error: table or view does not exist
+      
+      SELECT * 
+      FROM   USER_RECYCLEBIN
+      WHERE  original_name = 'E_emp';  -- query the table in the recycle bin
+      
+
+-- 16: Renaming a Column
+       CREATE TABLE
+            Xx_dept_table ( depno NUMBER
+                          , daname VARCHAR2(100)
+                          );
+       
+       ALTER TABLE
+            Xx_dept_table
+                RENAME COLUMN daname 
+                        TO dept_name;
+      
+       SELECT * FROM Xx_dept_table;
+    
+-- 17: Renaming an Object(table)
+       RENAME
+            Xx_dept_table
+                    TO Xx_dept_t;
+                    
+      SELECT * FROM Xx_dept_table;   -- Error: this name no longer exist
+      SELECT * FROM Xx_dept_t;
