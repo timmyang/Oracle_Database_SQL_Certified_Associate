@@ -4,6 +4,12 @@ FROM Employees;
 SELECT employee_id
 FROM Employees;
 
+SELECT first_name
+FROM Employees;
+
+SELECT last_name, email
+FROM Employees;
+
 
 -- Keywords:
     --1 Data Manipulation Language (DML), Statement
