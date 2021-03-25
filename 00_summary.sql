@@ -588,3 +588,6 @@ SELECT ...
             -- be included in the following result?
             WHERE  column1 LIKE '%s%';  -- includes s
             
+            
+SELECT * 
+FROM Employees;
