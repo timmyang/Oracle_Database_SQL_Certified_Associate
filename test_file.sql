@@ -1,6 +1,3 @@
-SELECT *
-FROM employees;
-
 
 -- Keywords:
     --1 Data Manipulation Language (DML), Statement
