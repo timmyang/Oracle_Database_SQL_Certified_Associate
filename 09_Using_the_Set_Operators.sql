@@ -232,5 +232,4 @@ FROM     Employees
 UNION
 
 SELECT   employee_id, job_id, to_char(NULL) email
-FROM     Job_history;
-
+FROM     Job_history;  
