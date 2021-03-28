@@ -1,11 +1,11 @@
 
 -- Keywords:
-    --1 Data Manipulation Language (DML), Statement
+    --1 Data Manipulation Language (DML) = Statement
         SELECT, INSERT, UPDATE, DELETE(FROM), MERGE
     --2 Clause
         WHERE, ORDER BY, FETCH, HAVING, TOP, GROUP BY,
         FOR UPDATE
-    --3 Data Definition Language (DDL), Statement
+    --3 Data Definition Language (DDL) = Statement
         CREATE(TABLE), ALTER(TABLE), DROP(COLUMN), RENAME, TRUNCATE
     --4 Data Control Language (DCL)
         GRANT, REVOKE
